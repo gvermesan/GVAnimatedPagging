@@ -9,7 +9,6 @@
 #import "GVHeader.h"
 #import "GVLabel.h"
 #import "GVIndicatorView.h"
-#import "GVAnimattedPagging.h"
 
 #define GVFloatsEqual(_f1, _f2)    (fabs( (_f1) - (_f2) ) < FLT_EPSILON)
 

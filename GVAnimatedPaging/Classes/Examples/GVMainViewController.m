@@ -7,11 +7,11 @@
 //
 
 #import "GVMainViewController.h"
-#import "GVAnimattedPagging.h"
+#import "GVAnimatedPaging.h"
 
 @interface GVMainViewController ()<UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) GVAnimattedPagging *animattedPagging;
+@property (nonatomic, strong) GVAnimatedPaging *animatedPaging;
 @property (nonatomic, strong) UITableView *tableview1;
 @property (nonatomic, strong) UITableView *tableview2;
 @property (nonatomic, strong) UITableView *tableview3;
@@ -24,10 +24,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"Animatted Pagging";
+    self.title = @"Animated Paging";
     self.mutableArray = [NSMutableArray array];
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    [self.view addSubview:self.animattedPagging];
+    [self.view addSubview:self.animatedPaging];
     
     self.tableview1 = [[UITableView alloc] initWithFrame:CGRectZero
                                                           style:UITableViewStylePlain];
@@ -53,20 +53,20 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    self.animattedPagging.frame = self.view.bounds;
+    self.animatedPaging.frame = self.view.bounds;
     self.tableview1.frame = CGRectMake(0.0,
                                        0.0,
-                                       CGRectGetWidth(self.animattedPagging.bounds),
+                                       CGRectGetWidth(self.animatedPaging.bounds),
                                        460);
     self.tableview2.frame = CGRectMake(0.f,
                                        0.0,
-                                       CGRectGetWidth(self.animattedPagging.bounds),
+                                       CGRectGetWidth(self.animatedPaging.bounds),
                                        460);
     self.tableview3.frame = CGRectMake(0.f,
                                        0.0,
-                                       CGRectGetWidth(self.animattedPagging.bounds),
+                                       CGRectGetWidth(self.animatedPaging.bounds),
                                        460);
-    self.animattedPagging.views = self.mutableArray;
+    self.animatedPaging.views = self.mutableArray;
     
 }
 
@@ -93,13 +93,13 @@
 }
 #pragma mark - Property
 
-- (GVAnimattedPagging *)animattedPagging {
-    if (!_animattedPagging) {
+- (GVAnimatedPaging *)animatedPaging {
+    if (!_animatedPaging) {
         NSArray *names = @[@"Endava", @"Gabriel", @"Vermesan"];
-        _animattedPagging = [[GVAnimattedPagging alloc] initWithProportion:0.15 andHeaderNames:names];
-        _animattedPagging.backgroundColor = [UIColor clearColor];
+        _animatedPaging = [[GVAnimatedPaging alloc] initWithProportion:0.15 andHeaderNames:names];
+        _animatedPaging.backgroundColor = [UIColor clearColor];
     }
-    return _animattedPagging;
+    return _animatedPaging;
 }
 
 @end

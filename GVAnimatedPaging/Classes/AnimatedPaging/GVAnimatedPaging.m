@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Gabriel Vermesan. All rights reserved.
 //
 
-#import "GVAnimattedPagging.h"
+#import "GVAnimatedPaging.h"
 #import "GVHeader.h"
 
-@interface GVAnimattedPagging()<UIScrollViewDelegate>
+@interface GVAnimatedPaging()<UIScrollViewDelegate>
 
 @property (nonatomic, assign) CGFloat proportion;
 @property (nonatomic, strong) NSArray *headerNames;
@@ -17,7 +17,7 @@
 @property (nonatomic, strong) GVHeader *header;
 @end
 
-@implementation GVAnimattedPagging
+@implementation GVAnimatedPaging
 
 - (instancetype)initWithProportion:(CGFloat)proportion andHeaderNames:(NSArray *)names {
     self = [super init];
@@ -36,9 +36,9 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.header.frame = CGRectMake(0.f,
-                             0.f,
-                             CGRectGetWidth(self.bounds),
-                             CGRectGetHeight(self.bounds) * self.proportion);
+                                   0.f,
+                                   CGRectGetWidth(self.bounds),
+                                   CGRectGetHeight(self.bounds) * self.proportion);
     self.scrollView.frame = CGRectMake(0.f,
                                        CGRectGetMaxY(self.header.frame),
                                        CGRectGetWidth(self.bounds),

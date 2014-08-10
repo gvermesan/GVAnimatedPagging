@@ -8,7 +8,7 @@
 
 @import UIKit;
 
-@interface GVAnimattedPagging : UIView
+@interface GVAnimatedPaging : UIView
 
 - (instancetype)initWithProportion:(CGFloat)proportion andHeaderNames:(NSArray *)names;
 
