@@ -16,6 +16,4 @@
 @property (nonatomic, readonly, strong) GVHeader *header;
 @property (nonatomic, strong) NSArray *views;
 
-@property (nonatomic, assign) CGFloat indicatorSide;
-
 @end

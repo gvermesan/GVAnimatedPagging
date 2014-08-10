@@ -27,6 +27,7 @@
     if (self) {
         self.backgroundColor = [UIColor blackColor];
         self.contentOffsetX = 0.f;
+        self.indicatorHeight = 12.f;
         [self addSubview:self.indicatorView];
     }
     return self;
@@ -35,11 +36,10 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     [self setFrameForEachLabel];
-    CGFloat indicatorHeight = CGRectGetHeight(self.bounds) / 4.f;
     self.indicatorView.frame = CGRectMake(0.f,
-                                          CGRectGetHeight(self.bounds) - indicatorHeight,
+                                          CGRectGetHeight(self.bounds) - self.indicatorHeight,
                                           CGRectGetWidth(self.bounds),
-                                          indicatorHeight);
+                                          self.indicatorHeight);
 }
 
 #pragma mark - Property
@@ -64,6 +64,14 @@
         GVLabel *label = self.allLabels[i];
         label.attributedText = _attributedString;
     }
+}
+
+- (void)setIndicatorHeight:(CGFloat)indicatorHeight {
+    if (GVFloatsEqual(_indicatorHeight, indicatorHeight)) {
+        return;
+    }
+    _indicatorHeight = indicatorHeight;
+    [self setNeedsLayout];
 }
 
 - (void)setContentOffsetX:(CGFloat)contentOffsetX {
@@ -99,27 +107,23 @@
 #pragma mark - Private method
 
 - (void)recalculateNewLabelCenter:(CGFloat)offset {
-    
     NSUInteger count = [self.allLabels count];
     for (NSUInteger i = 0; i < count; i++) {
         
-        GVLabel *currentLabel = self.allLabels[i];
+        GVLabel *previousLabel = self.allLabels[i];
         if (i + 1 < count) {
-            GVLabel * previousLabel = self.allLabels[i + 1];
-            CGFloat distanceBetweenLabelCenters = (previousLabel.center.x - currentLabel.center.x);
+            GVLabel * currentLabel = self.allLabels[i + 1];
+            CGFloat distanceBetweenLabelCenters = (currentLabel.center.x - previousLabel.center.x);
             CGFloat xDirection = offset - self.lastPosition;
-            CGFloat devider = ((CGRectGetWidth(currentLabel.bounds) - distanceBetweenLabelCenters) / 3.f);
-            self.headerCenterX -= xDirection / devider;
+            self.headerCenterX -= xDirection / 3.f;
             self.lastPosition = offset;
-            
-            if (CGRectGetWidth(self.indicatorView.bounds) / 2.f >= CGRectGetMinX(currentLabel.frame) &&
-                CGRectGetWidth(self.indicatorView.bounds) / 2.f < CGRectGetMaxX(currentLabel.frame)) {
-                currentLabel.textColor = [UIColor whiteColor];
-            } else {
-                currentLabel.textColor = [UIColor lightGrayColor];
-            }
         }
-        
+        if (CGRectGetWidth(self.indicatorView.bounds) / 2.f >= CGRectGetMinX(previousLabel.frame) &&
+            CGRectGetWidth(self.indicatorView.bounds) / 2.f < CGRectGetMaxX(previousLabel.frame)) {
+            previousLabel.textColor = [UIColor whiteColor];
+        } else {
+            previousLabel.textColor = [UIColor lightGrayColor];
+        }
         
     }
 }
@@ -141,16 +145,13 @@
     for (NSUInteger i = 0; i < count; i++) {
         GVLabel *label = self.allLabels[i];
         CGFloat width = [self calculateLabelWidth:label];
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            self.headerCenterX = (CGRectGetWidth(self.bounds) - width) / 2.f;
-        });
-        
-        label.frame = CGRectMake(self.headerCenterX + lastLabelWidth,
+        CGFloat offsetX = self.headerCenterX + (CGRectGetWidth(self.bounds) - width) / 2.f;
+        label.frame = CGRectMake(offsetX + lastLabelWidth,
                                  0.0,
                                  width,
                                  CGRectGetHeight(self.bounds));
-        lastLabelWidth += CGRectGetWidth(label.frame);
+        NSLog(@"Origin %f", CGRectGetMinX(label.frame));
+        lastLabelWidth += CGRectGetWidth(label.bounds);
     }
 }
 

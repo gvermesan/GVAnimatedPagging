@@ -8,12 +8,15 @@
 
 @import UIKit;
 
+@class GVIndicatorView;
 @interface GVHeader : UIView
+
+@property (nonatomic, readonly, strong) GVIndicatorView *indicatorview;
 
 @property (nonatomic, strong) NSArray *names;
 @property (nonatomic, strong) UIFont *headerNameFont;
-@property (nonatomic, strong) UIColor *indicatorBackgroundColor;
 @property (nonatomic, assign) CGFloat contentOffsetX;
 @property (nonatomic, strong) NSAttributedString *attributedString;
+@property (nonatomic, assign) CGFloat indicatorHeight;
 
 @end

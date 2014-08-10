@@ -50,6 +50,7 @@
     self.tableview3.delegate = self;
     self.tableview3.dataSource = self;
     [self.mutableArray addObject:self.tableview3];
+    [self.mutableArray addObject:self.tableview3];
     
 }
 
@@ -97,7 +98,7 @@
 
 - (GVAnimatedPaging *)animatedPaging {
     if (!_animatedPaging) {
-        NSArray *names = @[@"Endavaaaaaaaaaaaaaa", @"Gabriellllllll", @"Vermesannnnnnnn"];
+        NSArray *names = @[@"Enaaaaaaaaaaaaaaaaaaaaaa", @"Gabriellllllllllllllll", @"Vermesanaaaaaaaaaaaaaaaaa", @"Abracadabra"];
         CGFloat proportion = DEVICE_IS_IPAD ? 0.1f : 0.15f;
         _animatedPaging = [[GVAnimatedPaging alloc] initWithProportion:proportion andHeaderNames:names];
         _animatedPaging.backgroundColor = [UIColor clearColor];
