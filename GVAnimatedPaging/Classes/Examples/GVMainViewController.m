@@ -9,6 +9,8 @@
 #import "GVMainViewController.h"
 #import "GVAnimatedPaging.h"
 
+#define DEVICE_IS_IPAD ( UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM())
+
 @interface GVMainViewController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) GVAnimatedPaging *animatedPaging;
@@ -57,15 +59,15 @@
     self.tableview1.frame = CGRectMake(0.0,
                                        0.0,
                                        CGRectGetWidth(self.animatedPaging.bounds),
-                                       460);
+                                       CGRectGetHeight(self.view.bounds) * (1.f - 0.15f));
     self.tableview2.frame = CGRectMake(0.f,
                                        0.0,
                                        CGRectGetWidth(self.animatedPaging.bounds),
-                                       460);
+                                       CGRectGetHeight(self.view.bounds) * (1.f - 0.15f));
     self.tableview3.frame = CGRectMake(0.f,
                                        0.0,
                                        CGRectGetWidth(self.animatedPaging.bounds),
-                                       460);
+                                       CGRectGetHeight(self.view.bounds) * (1.f - 0.15f));
     self.animatedPaging.views = self.mutableArray;
     
 }
@@ -95,8 +97,9 @@
 
 - (GVAnimatedPaging *)animatedPaging {
     if (!_animatedPaging) {
-        NSArray *names = @[@"Endava", @"Gabriel", @"Vermesan"];
-        _animatedPaging = [[GVAnimatedPaging alloc] initWithProportion:0.15 andHeaderNames:names];
+        NSArray *names = @[@"Endavaaaaaaaaaaaaaa", @"Gabriellllllll", @"Vermesannnnnnnn"];
+        CGFloat proportion = DEVICE_IS_IPAD ? 0.1f : 0.15f;
+        _animatedPaging = [[GVAnimatedPaging alloc] initWithProportion:proportion andHeaderNames:names];
         _animatedPaging.backgroundColor = [UIColor clearColor];
     }
     return _animatedPaging;

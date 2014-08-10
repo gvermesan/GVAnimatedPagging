@@ -65,30 +65,6 @@
     [self addViewsOverScrollView:_views];
 }
 
-- (void)setHeaderNameFont:(UIFont *)headerNameFont {
-    if ([_headerNameFont isEqual:headerNameFont]) {
-        return;
-    }
-    _headerNameFont = headerNameFont;
-    self.header.headerNameFont = _headerNameFont;
-}
-
-- (void)setHeaderBackgroundColor:(UIColor *)headerBackgroundColor {
-    if ([_headerBackgroundColor isEqual:headerBackgroundColor]) {
-        return;
-    }
-    _headerBackgroundColor = headerBackgroundColor;
-    self.header.backgroundColor = _headerBackgroundColor;
-}
-
-- (void)setIndicatorBackgroundColor:(UIColor *)indicatorBackgroundColor {
-    if ([_indicatorBackgroundColor isEqual:indicatorBackgroundColor]) {
-        return;
-    }
-    _indicatorBackgroundColor = indicatorBackgroundColor;
-    self.header.indicatorBackgroundColor = _indicatorBackgroundColor;
-}
-
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];

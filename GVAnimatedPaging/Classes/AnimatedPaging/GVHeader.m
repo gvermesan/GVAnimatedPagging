@@ -14,9 +14,10 @@
 
 @interface GVHeader()
 @property (nonatomic, strong) GVIndicatorView *indicatorView;
-@property (nonatomic, strong) GVLabel *leftHeaderName;
-@property (nonatomic, strong) GVLabel *middleHeaderName;
-@property (nonatomic, strong) GVLabel *rightHeaderName;
+@property (nonatomic, assign) CGFloat headerCenterX;
+@property (nonatomic, assign) CGFloat lastPosition;
+@property (nonatomic, strong) NSMutableArray *allLabels;
+
 @end
 
 @implementation GVHeader
@@ -26,9 +27,6 @@
     if (self) {
         self.backgroundColor = [UIColor blackColor];
         self.contentOffsetX = 0.f;
-        [self addSubview:self.leftHeaderName];
-        [self addSubview:self.middleHeaderName];
-        [self addSubview:self.rightHeaderName];
         [self addSubview:self.indicatorView];
     }
     return self;
@@ -36,20 +34,8 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.leftHeaderName.frame = CGRectMake(-self.contentOffsetX,
-                                           0.0,
-                                           CGRectGetWidth(self.bounds) / 3.f,
-                                           CGRectGetHeight(self.bounds));
-    self.middleHeaderName.frame = CGRectMake(CGRectGetMaxX(self.leftHeaderName.frame),
-                                             0.0,
-                                             CGRectGetWidth(self.bounds) / 3.f,
-                                             CGRectGetHeight(self.bounds));
-    
-    self.rightHeaderName.frame = CGRectMake(CGRectGetMaxX(self.middleHeaderName.frame),
-                                             0.0,
-                                             CGRectGetWidth(self.bounds) / 3.f,
-                                             CGRectGetHeight(self.bounds));
-    CGFloat indicatorHeight = 10.f;
+    [self setFrameForEachLabel];
+    CGFloat indicatorHeight = CGRectGetHeight(self.bounds) / 4.f;
     self.indicatorView.frame = CGRectMake(0.f,
                                           CGRectGetHeight(self.bounds) - indicatorHeight,
                                           CGRectGetWidth(self.bounds),
@@ -63,9 +49,21 @@
         return;
     }
     _names = names;
-    self.leftHeaderName.text = _names[0];
-    self.middleHeaderName.text = _names[1];
-    self.rightHeaderName.text = _names[2];
+    [self createLabelsForHeader:_names];
+    [self defaultValues];
+}
+
+- (void)setAttributedString:(NSAttributedString *)attributedString {
+    if ([_attributedString isEqualToAttributedString:attributedString]) {
+        return;
+    }
+    _attributedString = attributedString;
+    NSUInteger count = [self.allLabels count];
+    
+    for (NSUInteger i = 0; i< count; i++) {
+        GVLabel *label = self.allLabels[i];
+        label.attributedText = _attributedString;
+    }
 }
 
 - (void)setContentOffsetX:(CGFloat)contentOffsetX {
@@ -73,6 +71,7 @@
         return;
     }
     _contentOffsetX = contentOffsetX;
+    [self recalculateNewLabelCenter:_contentOffsetX];
     [self setNeedsLayout];
 }
 
@@ -81,30 +80,6 @@
         return;
     }
     _headerNameFont = headerNameFont;
-    self.leftHeaderName.font =
-    self.middleHeaderName.font =
-    self.rightHeaderName.font = _headerNameFont;
-}
-
-- (GVLabel *)leftHeaderName {
-    if (!_leftHeaderName) {
-        _leftHeaderName = [[GVLabel alloc] initWithFrame:CGRectZero];
-    }
-    return _leftHeaderName;
-}
-
-- (GVLabel *)middleHeaderName {
-    if (!_middleHeaderName) {
-        _middleHeaderName = [[GVLabel alloc] initWithFrame:CGRectZero];
-    }
-    return _middleHeaderName;
-}
-
-- (GVLabel *)rightHeaderName {
-    if (!_rightHeaderName) {
-        _rightHeaderName = [[GVLabel alloc] initWithFrame:CGRectZero];
-    }
-    return _rightHeaderName;
 }
 
 - (GVIndicatorView *)indicatorView {
@@ -112,6 +87,84 @@
         _indicatorView = [[GVIndicatorView alloc] initWithFrame:CGRectZero];
     }
     return _indicatorView;
+}
+
+- (NSMutableArray *)allLabels {
+    if (!_allLabels) {
+        _allLabels = [NSMutableArray array];
+    }
+    return _allLabels;
+}
+
+#pragma mark - Private method
+
+- (void)recalculateNewLabelCenter:(CGFloat)offset {
+    
+    NSUInteger count = [self.allLabels count];
+    for (NSUInteger i = 0; i < count; i++) {
+        
+        GVLabel *currentLabel = self.allLabels[i];
+        if (i + 1 < count) {
+            GVLabel * previousLabel = self.allLabels[i + 1];
+            CGFloat distanceBetweenLabelCenters = (previousLabel.center.x - currentLabel.center.x);
+            CGFloat xDirection = offset - self.lastPosition;
+            CGFloat devider = ((CGRectGetWidth(currentLabel.bounds) - distanceBetweenLabelCenters) / 3.f);
+            self.headerCenterX -= xDirection / devider;
+            self.lastPosition = offset;
+            
+            if (CGRectGetWidth(self.indicatorView.bounds) / 2.f >= CGRectGetMinX(currentLabel.frame) &&
+                CGRectGetWidth(self.indicatorView.bounds) / 2.f < CGRectGetMaxX(currentLabel.frame)) {
+                currentLabel.textColor = [UIColor whiteColor];
+            } else {
+                currentLabel.textColor = [UIColor lightGrayColor];
+            }
+        }
+        
+        
+    }
+}
+
+- (void)createLabelsForHeader:(NSArray *)labels {
+    NSUInteger count = [labels count];
+    for (NSUInteger i = 0; i < count; i++) {
+        GVLabel *label;
+        label = [[GVLabel alloc] initWithFrame:CGRectZero];
+        label.text = labels[i];
+        [self addSubview:label];
+        [self.allLabels addObject:label];
+    }
+}
+
+- (void)setFrameForEachLabel {
+    CGFloat lastLabelWidth = 0.f;
+    NSUInteger count = [self.allLabels count];
+    for (NSUInteger i = 0; i < count; i++) {
+        GVLabel *label = self.allLabels[i];
+        CGFloat width = [self calculateLabelWidth:label];
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            self.headerCenterX = (CGRectGetWidth(self.bounds) - width) / 2.f;
+        });
+        
+        label.frame = CGRectMake(self.headerCenterX + lastLabelWidth,
+                                 0.0,
+                                 width,
+                                 CGRectGetHeight(self.bounds));
+        lastLabelWidth += CGRectGetWidth(label.frame);
+    }
+}
+
+- (CGFloat)calculateLabelWidth:(GVLabel *)label {
+    CGFloat width = CGRectGetWidth(self.bounds) / 3.f;
+    if (width > label.intrinsicContentSize.width) {
+        return width;
+    }
+    return label.intrinsicContentSize.width;
+}
+
+- (void)defaultValues {
+    GVLabel *firstLabel = [self.allLabels firstObject];
+    firstLabel.textColor = [UIColor whiteColor];
 }
 
 @end

@@ -14,4 +14,6 @@
 @property (nonatomic, strong) UIFont *headerNameFont;
 @property (nonatomic, strong) UIColor *indicatorBackgroundColor;
 @property (nonatomic, assign) CGFloat contentOffsetX;
+@property (nonatomic, strong) NSAttributedString *attributedString;
+
 @end

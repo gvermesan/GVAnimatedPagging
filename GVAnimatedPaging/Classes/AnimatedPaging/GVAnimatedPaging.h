@@ -7,17 +7,15 @@
 //
 
 @import UIKit;
+@class GVHeader;
 
 @interface GVAnimatedPaging : UIView
 
 - (instancetype)initWithProportion:(CGFloat)proportion andHeaderNames:(NSArray *)names;
 
+@property (nonatomic, readonly, strong) GVHeader *header;
 @property (nonatomic, strong) NSArray *views;
 
-//Header properties
-@property (nonatomic, strong) UIFont  *headerNameFont;
-@property (nonatomic, strong) UIColor *headerBackgroundColor;
-@property (nonatomic, strong) UIColor *indicatorBackgroundColor;
 @property (nonatomic, assign) CGFloat indicatorSide;
 
 @end
