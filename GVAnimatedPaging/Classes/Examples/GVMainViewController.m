@@ -98,7 +98,7 @@
 
 - (GVAnimatedPaging *)animatedPaging {
     if (!_animatedPaging) {
-        NSArray *names = @[@"Enaaaaaaaaaaaaaaaaaaaaaa", @"Gabriellllllllllllllll", @"Vermesanaaaaaaaaaaaaaaaaa", @"Abracadabra"];
+        NSArray *names = @[@"Enaaaaaaaaa", @"Gabriellllllll", @"Vermesannnnnnnnnnnnnnnnn", @"Abracadabra"];
         CGFloat proportion = DEVICE_IS_IPAD ? 0.1f : 0.15f;
         _animatedPaging = [[GVAnimatedPaging alloc] initWithProportion:proportion andHeaderNames:names];
         _animatedPaging.backgroundColor = [UIColor clearColor];

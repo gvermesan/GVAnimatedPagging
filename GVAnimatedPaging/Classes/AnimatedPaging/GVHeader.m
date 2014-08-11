@@ -114,8 +114,15 @@
         if (i + 1 < count) {
             GVLabel * currentLabel = self.allLabels[i + 1];
             CGFloat distanceBetweenLabelCenters = (currentLabel.center.x - previousLabel.center.x);
+            CGFloat xAdjustment = 0.f;
+//            if (distanceBetweenLabelCenters != CGRectGetWidth(currentLabel.bounds)) {
+//                xAdjustment = (distanceBetweenLabelCenters - CGRectGetWidth(currentLabel.bounds));
+//            }
             CGFloat xDirection = offset - self.lastPosition;
-            self.headerCenterX -= xDirection / 3.f;
+            
+            
+            
+            self.headerCenterX -= (xDirection - xAdjustment) / 2.f;
             self.lastPosition = offset;
         }
         if (CGRectGetWidth(self.indicatorView.bounds) / 2.f >= CGRectGetMinX(previousLabel.frame) &&
@@ -130,10 +137,10 @@
 
 - (void)createLabelsForHeader:(NSArray *)labels {
     NSUInteger count = [labels count];
-    for (NSUInteger i = 0; i < count; i++) {
+    for (NSUInteger index = 0; index < count; index++) {
         GVLabel *label;
         label = [[GVLabel alloc] initWithFrame:CGRectZero];
-        label.text = labels[i];
+        label.text = labels[index];
         [self addSubview:label];
         [self.allLabels addObject:label];
     }
@@ -141,26 +148,40 @@
 
 - (void)setFrameForEachLabel {
     CGFloat lastLabelWidth = 0.f;
+    CGFloat lastLabelOffset = 0.f;
     NSUInteger count = [self.allLabels count];
     for (NSUInteger i = 0; i < count; i++) {
         GVLabel *label = self.allLabels[i];
         CGFloat width = [self calculateLabelWidth:label];
-        CGFloat offsetX = self.headerCenterX + (CGRectGetWidth(self.bounds) - width) / 2.f;
+        CGFloat offsetForDinamicWidth = [self offsetForDynamicWidth:label];
+        CGFloat offsetX = self.headerCenterX +
+                          offsetForDinamicWidth + lastLabelOffset +
+                          (CGRectGetWidth(self.bounds) - width) / 2.f;
         label.frame = CGRectMake(offsetX + lastLabelWidth,
                                  0.0,
                                  width,
                                  CGRectGetHeight(self.bounds));
-        NSLog(@"Origin %f", CGRectGetMinX(label.frame));
         lastLabelWidth += CGRectGetWidth(label.bounds);
+        lastLabelOffset = offsetForDinamicWidth;
     }
 }
 
 - (CGFloat)calculateLabelWidth:(GVLabel *)label {
-    CGFloat width = CGRectGetWidth(self.bounds) / 3.f;
+    CGFloat width = CGRectGetWidth(self.bounds) / 2.f;
     if (width > label.intrinsicContentSize.width) {
         return width;
     }
     return label.intrinsicContentSize.width;
+}
+
+- (CGFloat)offsetForDynamicWidth:(GVLabel *)label {
+    CGFloat width = CGRectGetWidth(self.bounds) / 2.f;
+    CGFloat offset;
+    if (width < label.intrinsicContentSize.width) {
+        offset = (label.intrinsicContentSize.width - width);
+        return offset;
+    }
+    return 0.f;
 }
 
 - (void)defaultValues {
