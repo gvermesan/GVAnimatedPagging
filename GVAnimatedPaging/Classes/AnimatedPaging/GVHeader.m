@@ -14,13 +14,19 @@
 
 @interface GVHeader()
 @property (nonatomic, strong) GVIndicatorView *indicatorView;
+@property (nonatomic, strong) NSMutableArray *allLabels;
 @property (nonatomic, assign) CGFloat headerCenterX;
 @property (nonatomic, assign) CGFloat lastPosition;
-@property (nonatomic, strong) NSMutableArray *allLabels;
+@property (nonatomic, assign) CGFloat touchedPoint;
+@property (nonatomic, assign) CGFloat increment;
 
 @end
 
 @implementation GVHeader
+
+NSString *const kTouchMoved = @"touchesMoved";
+NSString *const kAllTouches = @"AllTouches";
+NSString *const kFirstTouch = @"FirstTouch";
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -58,10 +64,7 @@
         return;
     }
     _attributedString = attributedString;
-    NSUInteger count = [self.allLabels count];
-    
-    for (NSUInteger i = 0; i< count; i++) {
-        GVLabel *label = self.allLabels[i];
+    for (GVLabel *label in self.allLabels) {
         label.attributedText = _attributedString;
     }
 }
@@ -104,34 +107,60 @@
     return _allLabels;
 }
 
+#pragma mark - UIPanGestureRecognizer Action method
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint firstTouch = [touch locationInView:self];
+    self.touchedPoint = firstTouch.x;
+}
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    NSValue *value = [NSValue valueWithCGPoint:touchPoint];
+    NSDictionary *dictionary = @{kFirstTouch : @(self.touchedPoint),
+                                 kAllTouches : value};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTouchMoved object:dictionary];
+}
+
 #pragma mark - Private method
 
 - (void)recalculateNewLabelCenter:(CGFloat)offset {
     NSUInteger count = [self.allLabels count];
-    for (NSUInteger i = 0; i < count; i++) {
-        
-        GVLabel *previousLabel = self.allLabels[i];
-        if (i + 1 < count) {
-            GVLabel * currentLabel = self.allLabels[i + 1];
-            CGFloat distanceBetweenLabelCenters = (currentLabel.center.x - previousLabel.center.x);
-            CGFloat xAdjustment = 0.f;
-//            if (distanceBetweenLabelCenters != CGRectGetWidth(currentLabel.bounds)) {
-//                xAdjustment = (distanceBetweenLabelCenters - CGRectGetWidth(currentLabel.bounds));
-//            }
-            CGFloat xDirection = offset - self.lastPosition;
-            
-            
-            
-            self.headerCenterX -= (xDirection - xAdjustment) / 2.f;
-            self.lastPosition = offset;
+    
+    for (NSUInteger index = 0; index < count; index++) {
+        GVLabel *currentLabel = self.allLabels[index];
+        CGFloat xDirection = offset - self.lastPosition;
+
+        NSUInteger labelIndex;
+        BOOL rightAnimation = (CGRectGetWidth(self.indicatorView.bounds) / 2.f > CGRectGetMinX(currentLabel.frame) &&
+                               CGRectGetWidth(self.indicatorView.bounds) / 2.f < currentLabel.center.x);
+       
+        if (rightAnimation) {
+            labelIndex = [self.allLabels indexOfObject:currentLabel];
         }
-        if (CGRectGetWidth(self.indicatorView.bounds) / 2.f >= CGRectGetMinX(previousLabel.frame) &&
-            CGRectGetWidth(self.indicatorView.bounds) / 2.f < CGRectGetMaxX(previousLabel.frame)) {
-            previousLabel.textColor = [UIColor whiteColor];
+        
+        BOOL leftAnimation = (CGRectGetWidth(self.indicatorView.bounds) / 2.f <= CGRectGetMinX(currentLabel.frame) &&
+                               CGRectGetWidth(self.indicatorView.bounds) / 2.f > currentLabel.center.x);
+        if (leftAnimation) {
+            labelIndex = [self.allLabels indexOfObject:currentLabel];
+        }
+        NSLog(@"Velocity %f", self.velocityValue);
+//        if (self.velocityValue <= 60) {
+//            self.headerCenterX -= xDirection/ 2.f + self.increment;
+//            NSLog(@"1");
+//        } else if (self.velocityValue > 60) {
+//            self.increment += 0.5;
+//            self.headerCenterX -=  xDirection / 2.f + self.increment;
+//            NSLog(@"2");
+//        }
+        self.headerCenterX -=  xDirection  / 2.f;
+        self.lastPosition = offset;
+        if (CGRectGetWidth(self.indicatorView.bounds) / 2.f >= CGRectGetMinX(currentLabel.frame) &&
+            CGRectGetWidth(self.indicatorView.bounds) / 2.f < CGRectGetMaxX(currentLabel.frame)) {
+            currentLabel.textColor = [UIColor whiteColor];
         } else {
-            previousLabel.textColor = [UIColor lightGrayColor];
+            currentLabel.textColor = [UIColor lightGrayColor];
         }
-        
     }
 }
 
@@ -141,6 +170,7 @@
         GVLabel *label;
         label = [[GVLabel alloc] initWithFrame:CGRectZero];
         label.text = labels[index];
+        label.font = [UIFont fontWithName:@"Helvetica" size:24];
         [self addSubview:label];
         [self.allLabels addObject:label];
     }
@@ -148,21 +178,17 @@
 
 - (void)setFrameForEachLabel {
     CGFloat lastLabelWidth = 0.f;
-    CGFloat lastLabelOffset = 0.f;
-    NSUInteger count = [self.allLabels count];
-    for (NSUInteger i = 0; i < count; i++) {
-        GVLabel *label = self.allLabels[i];
+    for (GVLabel *label in self.allLabels) {
         CGFloat width = [self calculateLabelWidth:label];
         CGFloat offsetForDinamicWidth = [self offsetForDynamicWidth:label];
         CGFloat offsetX = self.headerCenterX +
-                          offsetForDinamicWidth + lastLabelOffset +
+                          offsetForDinamicWidth +
                           (CGRectGetWidth(self.bounds) - width) / 2.f;
         label.frame = CGRectMake(offsetX + lastLabelWidth,
                                  0.0,
                                  width,
                                  CGRectGetHeight(self.bounds));
         lastLabelWidth += CGRectGetWidth(label.bounds);
-        lastLabelOffset = offsetForDinamicWidth;
     }
 }
 
@@ -171,7 +197,8 @@
     if (width > label.intrinsicContentSize.width) {
         return width;
     }
-    return label.intrinsicContentSize.width;
+    CGFloat additionalWidth = [self offsetForDynamicWidth:label];
+    return label.intrinsicContentSize.width + additionalWidth;
 }
 
 - (CGFloat)offsetForDynamicWidth:(GVLabel *)label {

@@ -19,6 +19,14 @@
 
 @implementation GVAnimatedPaging
 
+NSString *const kTouchMovedNotified = @"touchesMoved";
+NSString *const kAllTouchesNotified = @"AllTouches";
+NSString *const kFirstTouchNotified = @"FirstTouch";
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (instancetype)initWithProportion:(CGFloat)proportion andHeaderNames:(NSArray *)names {
     self = [super init];
     if (self) {
@@ -29,6 +37,7 @@
         [self addSubview:self.scrollView];
         
         self.header.names = self.headerNames;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(headerTouched:) name:kTouchMovedNotified object:nil];
     }
     return self;
 }
@@ -50,12 +59,40 @@
                                              CGRectGetHeight(self.scrollView.bounds));
     
     
+    
+}
+
+#pragma NSNotificationCenter method
+
+- (void)headerTouched:(NSNotification *)notif {
+    NSDictionary *dict = notif.object;
+    NSValue *value = dict[kAllTouchesNotified];
+    CGPoint currentTouchPoint = [value CGPointValue];
+    CGFloat firstTouchX = [dict[kFirstTouchNotified] floatValue];
+    BOOL flag = (currentTouchPoint.x < firstTouchX);
+    NSUInteger currentPage = flag ?
+                             self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds) + 1 : self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds) - 0.5f;
+    firstTouchX *= currentPage;
+    CGFloat newContentOffsetX = flag ? currentPage * CGRectGetWidth(self.bounds) - currentTouchPoint.x :
+                                                                      (currentPage - 0.5) * CGRectGetWidth(self.bounds) - currentTouchPoint.x;
+    
+    if (self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds) >= self.scrollView.contentSize.width && flag) {
+        return;
+    }
+    self.scrollView.contentOffset = CGPointMake(newContentOffsetX, 0.f);
+    [self.scrollView scrollRectToVisible:CGRectMake(currentPage * CGRectGetWidth(self.bounds),
+                                                   0.f,
+                                                   CGRectGetWidth(self.bounds),
+                                                    CGRectGetHeight(self.scrollView.bounds))
+                                animated:YES];
 }
 
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    self.header.decelerating = scrollView.decelerating;
     self.header.contentOffsetX = scrollView.contentOffset.x;
+    self.header.velocityValue = fabsf([[scrollView panGestureRecognizer] velocityInView:self].x);
 }
 
 #pragma mark - Property
@@ -68,7 +105,7 @@
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
-        _scrollView.backgroundColor = [UIColor clearColor];
+        _scrollView.backgroundColor = [UIColor lightGrayColor];
         _scrollView.pagingEnabled = YES;
         _scrollView.delegate = self;
     }

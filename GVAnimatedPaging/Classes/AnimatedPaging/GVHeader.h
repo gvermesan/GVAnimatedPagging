@@ -15,8 +15,13 @@
 
 @property (nonatomic, strong) NSArray *names;
 @property (nonatomic, strong) UIFont *headerNameFont;
-@property (nonatomic, assign) CGFloat contentOffsetX;
 @property (nonatomic, strong) NSAttributedString *attributedString;
 @property (nonatomic, assign) CGFloat indicatorHeight;
+
+//Scroll properties
+@property (nonatomic, assign) CGFloat contentOffsetX;
+@property (nonatomic, assign) CGFloat scrollOffset;
+@property (nonatomic, assign, getter = isDecelerating) BOOL decelerating;
+@property (nonatomic, assign) CGFloat velocityValue;
 
 @end

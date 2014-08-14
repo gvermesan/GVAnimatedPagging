@@ -51,24 +51,27 @@
     self.tableview3.dataSource = self;
     [self.mutableArray addObject:self.tableview3];
     [self.mutableArray addObject:self.tableview3];
+    [self.mutableArray addObject:self.tableview1];
+    [self.mutableArray addObject:self.tableview3];
     
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     self.animatedPaging.frame = self.view.bounds;
+    CGFloat proportion = DEVICE_IS_IPAD ? 0.1f : 0.15f;
     self.tableview1.frame = CGRectMake(0.0,
                                        0.0,
                                        CGRectGetWidth(self.animatedPaging.bounds),
-                                       CGRectGetHeight(self.view.bounds) * (1.f - 0.15f));
+                                       CGRectGetHeight(self.view.bounds) * (1.f - proportion));
     self.tableview2.frame = CGRectMake(0.f,
                                        0.0,
                                        CGRectGetWidth(self.animatedPaging.bounds),
-                                       CGRectGetHeight(self.view.bounds) * (1.f - 0.15f));
+                                       CGRectGetHeight(self.view.bounds) * (1.f - proportion));
     self.tableview3.frame = CGRectMake(0.f,
                                        0.0,
                                        CGRectGetWidth(self.animatedPaging.bounds),
-                                       CGRectGetHeight(self.view.bounds) * (1.f - 0.15f));
+                                       CGRectGetHeight(self.view.bounds) * (1.f - proportion));
     self.animatedPaging.views = self.mutableArray;
     
 }
@@ -98,7 +101,7 @@
 
 - (GVAnimatedPaging *)animatedPaging {
     if (!_animatedPaging) {
-        NSArray *names = @[@"Enaaaaaaaaa", @"Gabriellllllll", @"Vermesannnnnnnnnnnnnnnnn", @"Abracadabra"];
+        NSArray *names = @[@"Enaaaaaaaaa", @"Gabriel", @"Vermesan", @"Abracadabra", @"wdeqweqfreqcf", @"Adfwaeohv0fr"];
         CGFloat proportion = DEVICE_IS_IPAD ? 0.1f : 0.15f;
         _animatedPaging = [[GVAnimatedPaging alloc] initWithProportion:proportion andHeaderNames:names];
         _animatedPaging.backgroundColor = [UIColor clearColor];
