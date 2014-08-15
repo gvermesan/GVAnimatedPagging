@@ -55,6 +55,7 @@
     [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(self.bounds) / 2.f, 0.f)];
     [bezierPath addLineToPoint:CGPointMake((CGRectGetWidth(self.bounds) + sideWidth) / 2.f, CGRectGetHeight(self.bounds))];
     [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds))];
+    [bezierPath moveToPoint:CGPointMake(0.f, CGRectGetHeight(self.bounds))];
     [bezierPath closePath];
     [bezierPath fill];
     [bezierPath stroke];
