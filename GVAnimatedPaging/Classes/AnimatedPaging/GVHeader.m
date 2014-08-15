@@ -33,8 +33,9 @@ NSString *const kFirstTouch = @"FirstTouch";
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor blackColor];
-        self.contentOffsetX = 0.f;
         self.indicatorHeight = DEVICE_IS_IPAD ? 20.f : 15.f;
+        self.contentOffsetX = 0.f;
+        self.increment = 0.f;
         [self addSubview:self.indicatorView];
     }
     return self;
@@ -132,12 +133,14 @@ NSString *const kFirstTouch = @"FirstTouch";
         GVLabel *currentLabel = self.allLabels[index];
         CGFloat xDirection = offset - self.lastPosition;
         if (self.velocityValue <= 60) {
-            self.headerCenterX -= xDirection/ 2.f;
-            NSLog(@"1");
+            self.headerCenterX -= xDirection/ 2.f + self.increment;
+            self.increment = 0.f;
         } else if (self.velocityValue > 60) {
-            self.increment -= xDirection / 4.f ;
-            self.headerCenterX -=  xDirection / 2.f;
-            NSLog(@"2");
+            self.increment += 7.f / 16.f * xDirection;
+            [UIView animateWithDuration:2.5 animations:^{
+                self.headerCenterX -=  xDirection / 16.f;
+
+            }];
         }
         //self.headerCenterX -=  xDirection  / 2.f;
         self.lastPosition = offset;
