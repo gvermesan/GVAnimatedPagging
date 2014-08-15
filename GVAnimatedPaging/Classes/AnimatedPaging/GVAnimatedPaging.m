@@ -70,19 +70,24 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     CGPoint currentTouchPoint = [value CGPointValue];
     CGFloat firstTouchX = [dict[kFirstTouchNotified] floatValue];
     BOOL flag = (currentTouchPoint.x < firstTouchX);
-    NSUInteger currentPage = flag ?
-                             self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds) + 1 : self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds) - 0.5f;
-    firstTouchX *= currentPage;
+    
+    NSUInteger currentPage = flag ? (self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds)) + 1 :
+                                    ceilf((self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds))) - 1;
+
     CGFloat newContentOffsetX = flag ? currentPage * CGRectGetWidth(self.bounds) - currentTouchPoint.x :
-                                                                      (currentPage - 0.5) * CGRectGetWidth(self.bounds) - currentTouchPoint.x;
+                                       (currentPage + 1) * CGRectGetWidth(self.bounds) - currentTouchPoint.x;
     
     if (self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds) >= self.scrollView.contentSize.width && flag) {
+        currentPage -= 1;
+        return;
+    } else if (newContentOffsetX  < 0 && !flag) {
         return;
     }
+    
     self.scrollView.contentOffset = CGPointMake(newContentOffsetX, 0.f);
     [self.scrollView scrollRectToVisible:CGRectMake(currentPage * CGRectGetWidth(self.bounds),
-                                                   0.f,
-                                                   CGRectGetWidth(self.bounds),
+                                                    0.f,
+                                                    CGRectGetWidth(self.bounds),
                                                     CGRectGetHeight(self.scrollView.bounds))
                                 animated:YES];
 }

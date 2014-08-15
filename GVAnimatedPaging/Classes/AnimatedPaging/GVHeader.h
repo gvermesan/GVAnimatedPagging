@@ -17,6 +17,8 @@
 @property (nonatomic, strong) UIFont *headerNameFont;
 @property (nonatomic, strong) NSAttributedString *attributedString;
 @property (nonatomic, assign) CGFloat indicatorHeight;
+@property (nonatomic, strong) UIColor *centerTitleColor;
+@property (nonatomic, strong) UIColor *neighborTitleColor;
 
 //Scroll properties
 @property (nonatomic, assign) CGFloat contentOffsetX;

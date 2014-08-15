@@ -11,6 +11,7 @@
 #import "GVIndicatorView.h"
 
 #define GVFloatsEqual(_f1, _f2)    (fabs( (_f1) - (_f2) ) < FLT_EPSILON)
+#define DEVICE_IS_IPAD ( UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM())
 
 @interface GVHeader()
 @property (nonatomic, strong) GVIndicatorView *indicatorView;
@@ -33,7 +34,7 @@ NSString *const kFirstTouch = @"FirstTouch";
     if (self) {
         self.backgroundColor = [UIColor blackColor];
         self.contentOffsetX = 0.f;
-        self.indicatorHeight = 12.f;
+        self.indicatorHeight = DEVICE_IS_IPAD ? 20.f : 15.f;
         [self addSubview:self.indicatorView];
     }
     return self;
@@ -130,36 +131,22 @@ NSString *const kFirstTouch = @"FirstTouch";
     for (NSUInteger index = 0; index < count; index++) {
         GVLabel *currentLabel = self.allLabels[index];
         CGFloat xDirection = offset - self.lastPosition;
-
-        NSUInteger labelIndex;
-        BOOL rightAnimation = (CGRectGetWidth(self.indicatorView.bounds) / 2.f > CGRectGetMinX(currentLabel.frame) &&
-                               CGRectGetWidth(self.indicatorView.bounds) / 2.f < currentLabel.center.x);
-       
-        if (rightAnimation) {
-            labelIndex = [self.allLabels indexOfObject:currentLabel];
+        if (self.velocityValue <= 60) {
+            self.headerCenterX -= xDirection/ 2.f;
+            NSLog(@"1");
+        } else if (self.velocityValue > 60) {
+            self.increment -= xDirection / 4.f ;
+            self.headerCenterX -=  xDirection / 2.f;
+            NSLog(@"2");
         }
-        
-        BOOL leftAnimation = (CGRectGetWidth(self.indicatorView.bounds) / 2.f <= CGRectGetMinX(currentLabel.frame) &&
-                               CGRectGetWidth(self.indicatorView.bounds) / 2.f > currentLabel.center.x);
-        if (leftAnimation) {
-            labelIndex = [self.allLabels indexOfObject:currentLabel];
-        }
-        NSLog(@"Velocity %f", self.velocityValue);
-//        if (self.velocityValue <= 60) {
-//            self.headerCenterX -= xDirection/ 2.f + self.increment;
-//            NSLog(@"1");
-//        } else if (self.velocityValue > 60) {
-//            self.increment += 0.5;
-//            self.headerCenterX -=  xDirection / 2.f + self.increment;
-//            NSLog(@"2");
-//        }
-        self.headerCenterX -=  xDirection  / 2.f;
+        //self.headerCenterX -=  xDirection  / 2.f;
         self.lastPosition = offset;
+        
         if (CGRectGetWidth(self.indicatorView.bounds) / 2.f >= CGRectGetMinX(currentLabel.frame) &&
             CGRectGetWidth(self.indicatorView.bounds) / 2.f < CGRectGetMaxX(currentLabel.frame)) {
-            currentLabel.textColor = [UIColor whiteColor];
+            currentLabel.textColor = self.centerTitleColor;
         } else {
-            currentLabel.textColor = [UIColor lightGrayColor];
+            currentLabel.textColor = self.neighborTitleColor;
         }
     }
 }
@@ -170,7 +157,8 @@ NSString *const kFirstTouch = @"FirstTouch";
         GVLabel *label;
         label = [[GVLabel alloc] initWithFrame:CGRectZero];
         label.text = labels[index];
-        label.font = [UIFont fontWithName:@"Helvetica" size:24];
+        CGFloat fontSize = DEVICE_IS_IPAD ? 28 : 22;
+        label.font = [UIFont fontWithName:@"Helvetica" size:fontSize];
         [self addSubview:label];
         [self.allLabels addObject:label];
     }
@@ -214,6 +202,8 @@ NSString *const kFirstTouch = @"FirstTouch";
 - (void)defaultValues {
     GVLabel *firstLabel = [self.allLabels firstObject];
     firstLabel.textColor = [UIColor whiteColor];
+    self.neighborTitleColor = [UIColor lightGrayColor];
+    self.centerTitleColor = [UIColor whiteColor];
 }
 
 @end
