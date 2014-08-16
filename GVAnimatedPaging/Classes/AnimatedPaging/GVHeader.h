@@ -22,8 +22,6 @@
 
 //Scroll properties
 @property (nonatomic, assign) CGFloat contentOffsetX;
-@property (nonatomic, assign) CGFloat scrollOffset;
-@property (nonatomic, assign, getter = isDecelerating) BOOL decelerating;
 @property (nonatomic, assign) CGFloat velocityValue;
 
 @end

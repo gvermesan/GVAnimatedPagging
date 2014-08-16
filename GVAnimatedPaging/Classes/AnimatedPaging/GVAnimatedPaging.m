@@ -9,12 +9,21 @@
 #import "GVAnimatedPaging.h"
 #import "GVHeader.h"
 
+#define GVFloatsEqual(_f1, _f2)    (fabs( (_f1) - (_f2) ) < FLT_EPSILON)
+
 @interface GVAnimatedPaging()<UIScrollViewDelegate>
 
-@property (nonatomic, assign) CGFloat proportion;
+@property (nonatomic, assign) CGFloat height;
 @property (nonatomic, strong) NSArray *headerNames;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) GVHeader *header;
+
+@property (nonatomic, copy) NSAttributedString *attributedString;
+@property (nonatomic, strong) UIView *containedView;
+
+@property (nonatomic, strong) NSMutableOrderedSet *allViews;
+
+
 @end
 
 @implementation GVAnimatedPaging
@@ -27,19 +36,33 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (instancetype)initWithProportion:(CGFloat)proportion andHeaderNames:(NSArray *)names {
+- (instancetype)initWithHeaderText:(NSAttributedString *)attributedString andContainedView:(UIView *)view {
+    NSParameterAssert(attributedString.length);
+    NSParameterAssert(view);
+    
     self = [super init];
     if (self) {
-        self.proportion = proportion;
-        self.headerNames = names;
+        self.attributedString = attributedString;
+        self.containedView = view;
         
-        [self addSubview:self.header];
-        [self addSubview:self.scrollView];
+        [self.allViews addObject:view];
         
-        self.header.names = self.headerNames;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(headerTouched:) name:kTouchMovedNotified object:nil];
+        [self defaultValues];
     }
     return self;
+}
+
+
+- (void)reload {
+    NSParameterAssert(self.numberOfViewsCallBlock);
+    NSParameterAssert(self.containedViewAtIndexCallblock);
+
+    self
+    NSInteger count = self.numberOfViewsCallBlock();
+    for (NSUInteger index = 0;index < count; index++) {
+        GVContainer *container = self.containedViewAtIndexCallblock(index);
+        
+    }
 }
 
 - (void)layoutSubviews {
@@ -47,14 +70,14 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     self.header.frame = CGRectMake(0.f,
                                    0.f,
                                    CGRectGetWidth(self.bounds),
-                                   CGRectGetHeight(self.bounds) * self.proportion);
+                                   self.headerHeight);
     self.scrollView.frame = CGRectMake(0.f,
                                        CGRectGetMaxY(self.header.frame),
                                        CGRectGetWidth(self.bounds),
                                        CGRectGetHeight(self.bounds) - CGRectGetHeight(self.header.bounds));
     
-    [self addViewsOverScrollView:self.views];
-    NSInteger count = [self.views count];
+    [self addViewsOverScrollView:self.allViews];
+    NSInteger count = [self.allViews count];
     self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.scrollView.bounds) * count,
                                              CGRectGetHeight(self.scrollView.bounds));
     
@@ -69,6 +92,7 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     NSValue *value = dict[kAllTouchesNotified];
     CGPoint currentTouchPoint = [value CGPointValue];
     CGFloat firstTouchX = [dict[kFirstTouchNotified] floatValue];
+   
     BOOL flag = (currentTouchPoint.x < firstTouchX);
     
     NSUInteger currentPage = flag ? (self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds)) + 1 :
@@ -80,7 +104,9 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     if (self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds) >= self.scrollView.contentSize.width && flag) {
         currentPage -= 1;
         return;
-    } else if (newContentOffsetX  < 0 && !flag) {
+    }
+    
+    if (newContentOffsetX  < 0 && !flag) {
         return;
     }
     
@@ -95,16 +121,19 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    self.header.decelerating = scrollView.decelerating;
     self.header.contentOffsetX = scrollView.contentOffset.x;
     self.header.velocityValue = fabsf([[scrollView panGestureRecognizer] velocityInView:self].x);
 }
 
+
 #pragma mark - Property
 
-- (void)setViews:(NSArray *)views {
-    _views = views;
-    [self addViewsOverScrollView:_views];
+- (void)setHeaderHeight:(CGFloat)headerHeight {
+    if (GVFloatsEqual(_headerHeight, headerHeight)) {
+        return;
+    }
+    _headerHeight = headerHeight;
+    [self setNeedsLayout];
 }
 
 - (UIScrollView *)scrollView {
@@ -126,7 +155,7 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
 
 #pragma mark - Private methods
 
-- (void)addViewsOverScrollView:(NSArray *)views {
+- (void)addViewsOverScrollView:(NSMutableOrderedSet *)views {
     NSUInteger count = [views count];
     for (NSUInteger i = 0; i < count; i++) {
         UIView *view = views[i];
@@ -137,4 +166,9 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
         [self.scrollView addSubview:view];
     }
 }
+
+- (void)defaultValues {
+    self.headerHeight = 60.f;
+}
+
 @end

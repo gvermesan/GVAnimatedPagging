@@ -8,6 +8,7 @@
 
 #import "GVMainViewController.h"
 #import "GVAnimatedPaging.h"
+#import "GVContainer.h"
 
 #define DEVICE_IS_IPAD ( UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM())
 
@@ -22,6 +23,7 @@
 @property (nonatomic, strong) UIView *yellowView;
 
 @property (nonatomic, strong) NSMutableArray *mutableArray;
+
 @end
 
 @implementation GVMainViewController
@@ -65,39 +67,62 @@
     self.yellowView.backgroundColor = [UIColor yellowColor];
     [self.mutableArray addObject:self.yellowView];
     
+    /**
+     Datasource *datasource = [Datasource new];
+     datasource.numberOfViewsCallBlock = ^() {
+        return 1;
+     };
+     
+     datasource.containedViewAtIndexCallblock = ^GVContainer*(NSUInteger index) {
+         GVContainer *container = [[GVContainer alloc] initWithHeaderView:weakSelf.redView linkedView:weakSelf.tableview1];
+         return container;
+     };
+
+      self.animatedPaging = [[GVAnimatedPaging alloc] initWithFrame:CGRectZero
+                                                        datasource:datasource];
+     */
+    typeof (self) weakSelf = self;
+    self.animatedPaging = [[GVAnimatedPaging alloc] initWithFrame:CGRectZero];
+    
+    self.animatedPaging.numberOfViewsCallBlock = ^() {
+        return 1;
+    };
+    
+    self.animatedPaging.containedViewAtIndexCallblock = ^GVContainer*(NSUInteger index) {
+        GVContainer *container = [[GVContainer alloc] initWithHeaderView:weakSelf.redView linkedView:weakSelf.tableview1];
+        return container;
+    };
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     self.animatedPaging.frame = self.view.bounds;
-    CGFloat proportion = DEVICE_IS_IPAD ? 0.1f : 0.15f;
+    CGFloat headerHeight = 60.f;
     self.tableview1.frame = CGRectMake(0.0,
                                        0.0,
                                        CGRectGetWidth(self.animatedPaging.bounds),
-                                       CGRectGetHeight(self.view.bounds) * (1.f - proportion));
+                                       CGRectGetHeight(self.view.bounds) - headerHeight);
     self.tableview2.frame = CGRectMake(0.f,
                                        0.0,
                                        CGRectGetWidth(self.animatedPaging.bounds),
-                                       CGRectGetHeight(self.view.bounds) * (1.f - proportion));
+                                       CGRectGetHeight(self.view.bounds) - headerHeight);
     self.tableview3.frame = CGRectMake(0.f,
                                        0.0,
                                        CGRectGetWidth(self.animatedPaging.bounds),
-                                       CGRectGetHeight(self.view.bounds) * (1.f - proportion));
+                                       CGRectGetHeight(self.view.bounds) - headerHeight);
     self.redView.frame = CGRectMake(0.f,
                                     0.0,
                                     CGRectGetWidth(self.animatedPaging.bounds),
-                                    CGRectGetHeight(self.view.bounds) * (1.f - proportion));
+                                    CGRectGetHeight(self.view.bounds) - headerHeight);
     
     self.greenView.frame = CGRectMake(0.f,
                                     0.0,
                                     CGRectGetWidth(self.animatedPaging.bounds),
-                                    CGRectGetHeight(self.view.bounds) * (1.f - proportion));
+                                    CGRectGetHeight(self.view.bounds) - headerHeight);
     self.yellowView.frame = CGRectMake(0.f,
                                     0.0,
                                     CGRectGetWidth(self.animatedPaging.bounds),
-                                    CGRectGetHeight(self.view.bounds) * (1.f - proportion));
-    
-    self.animatedPaging.views = self.mutableArray;
+                                    CGRectGetHeight(self.view.bounds) - headerHeight);
     
 }
 
@@ -124,20 +149,19 @@
 }
 #pragma mark - Property
 
-- (GVAnimatedPaging *)animatedPaging {
-    if (!_animatedPaging) {
-        NSArray *names = @[@"#1 TableView",
-                           @"Red View",
-                           @"#2 TableView",
-                           @"Green View",
-                           @"#3 TableView",
-                           @"Yellow View"];
-        
-        CGFloat proportion = DEVICE_IS_IPAD ? 0.1f : 0.15f;
-        _animatedPaging = [[GVAnimatedPaging alloc] initWithProportion:proportion andHeaderNames:names];
-        _animatedPaging.backgroundColor = [UIColor clearColor];
-    }
-    return _animatedPaging;
-}
+//- (GVAnimatedPaging *)animatedPaging {
+//    if (!_animatedPaging) {
+//        NSArray *names = @[@"#1 TableView",
+//                           @"Red View",
+//                           @"#2 TableView",
+//                           @"Green Viewuyy",
+//                           @"#3 TableView",
+//                           @"Yellow View"];
+//        
+//        _animatedPaging = [[GVAnimatedPaging alloc] initWithHeaderHeight:60.f andHeaderNames:names];
+//        _animatedPaging.backgroundColor = [UIColor clearColor];
+//    }
+//    return _animatedPaging;
+//}
 
 @end

@@ -132,15 +132,16 @@ NSString *const kFirstTouch = @"FirstTouch";
     for (NSUInteger index = 0; index < count; index++) {
         GVLabel *currentLabel = self.allLabels[index];
         CGFloat xDirection = offset - self.lastPosition;
-        if (self.velocityValue <= 60) {
+        if (self.velocityValue <= 50) {
             self.headerCenterX -= xDirection/ 2.f + self.increment;
+            
             self.increment = 0.f;
-        } else if (self.velocityValue > 60) {
+        } else if (self.velocityValue > 50) {
             self.increment += 7.f / 16.f * xDirection;
-            [UIView animateWithDuration:2.5 animations:^{
+            //dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 self.headerCenterX -=  xDirection / 16.f;
+            //});
 
-            }];
         }
         //self.headerCenterX -=  xDirection  / 2.f;
         self.lastPosition = offset;
@@ -157,8 +158,7 @@ NSString *const kFirstTouch = @"FirstTouch";
 - (void)createLabelsForHeader:(NSArray *)labels {
     NSUInteger count = [labels count];
     for (NSUInteger index = 0; index < count; index++) {
-        GVLabel *label;
-        label = [[GVLabel alloc] initWithFrame:CGRectZero];
+        GVLabel *label = [[GVLabel alloc] initWithFrame:CGRectZero];
         label.text = labels[index];
         CGFloat fontSize = DEVICE_IS_IPAD ? 28 : 22;
         label.font = [UIFont fontWithName:@"Helvetica" size:fontSize];
