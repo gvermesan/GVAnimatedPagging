@@ -7,7 +7,6 @@
 //
 
 #import "GVHeader.h"
-#import "GVLabel.h"
 #import "GVIndicatorView.h"
 
 #define GVFloatsEqual(_f1, _f2)    (fabs( (_f1) - (_f2) ) < FLT_EPSILON)
@@ -25,7 +24,7 @@
 
 @implementation GVHeader
 
-NSString *const kTouchMoved = @"touchesMoved";
+NSString *const kTouchMoved = @"TouchesMoved";
 NSString *const kAllTouches = @"AllTouches";
 NSString *const kFirstTouch = @"FirstTouch";
 
@@ -61,15 +60,15 @@ NSString *const kFirstTouch = @"FirstTouch";
     [self defaultValues];
 }
 
-- (void)setAttributedString:(NSAttributedString *)attributedString {
-    if ([_attributedString isEqualToAttributedString:attributedString]) {
-        return;
-    }
-    _attributedString = attributedString;
-    for (GVLabel *label in self.allLabels) {
-        label.attributedText = _attributedString;
-    }
-}
+//- (void)setAttributedString:(NSAttributedString *)attributedString {
+//    if ([_attributedString isEqualToAttributedString:attributedString]) {
+//        return;
+//    }
+//    _attributedString = attributedString;
+//    for (UILabel *label in self.allLabels) {
+//        label.attributedText = _attributedString;
+//    }
+//}
 
 - (void)setIndicatorHeight:(CGFloat)indicatorHeight {
     if (GVFloatsEqual(_indicatorHeight, indicatorHeight)) {
@@ -130,7 +129,7 @@ NSString *const kFirstTouch = @"FirstTouch";
     NSUInteger count = [self.allLabels count];
     
     for (NSUInteger index = 0; index < count; index++) {
-        GVLabel *currentLabel = self.allLabels[index];
+        UILabel *currentLabel = self.allLabels[index];
         CGFloat xDirection = offset - self.lastPosition;
         if (self.velocityValue <= 50) {
             self.headerCenterX -= xDirection/ 2.f + self.increment;
@@ -158,8 +157,9 @@ NSString *const kFirstTouch = @"FirstTouch";
 - (void)createLabelsForHeader:(NSArray *)labels {
     NSUInteger count = [labels count];
     for (NSUInteger index = 0; index < count; index++) {
-        GVLabel *label = [[GVLabel alloc] initWithFrame:CGRectZero];
-        label.text = labels[index];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        [self defaultsValuesForLabel:label];
+        label.attributedText = labels[index];
         CGFloat fontSize = DEVICE_IS_IPAD ? 28 : 22;
         label.font = [UIFont fontWithName:@"Helvetica" size:fontSize];
         [self addSubview:label];
@@ -169,7 +169,7 @@ NSString *const kFirstTouch = @"FirstTouch";
 
 - (void)setFrameForEachLabel {
     CGFloat lastLabelWidth = 0.f;
-    for (GVLabel *label in self.allLabels) {
+    for (UILabel *label in self.allLabels) {
         CGFloat width = [self calculateLabelWidth:label];
         CGFloat offsetForDinamicWidth = [self offsetForDynamicWidth:label];
         CGFloat offsetX = self.headerCenterX +
@@ -183,7 +183,7 @@ NSString *const kFirstTouch = @"FirstTouch";
     }
 }
 
-- (CGFloat)calculateLabelWidth:(GVLabel *)label {
+- (CGFloat)calculateLabelWidth:(UILabel *)label {
     CGFloat width = CGRectGetWidth(self.bounds) / 2.f;
     if (width > label.intrinsicContentSize.width) {
         return width;
@@ -192,7 +192,7 @@ NSString *const kFirstTouch = @"FirstTouch";
     return label.intrinsicContentSize.width + additionalWidth;
 }
 
-- (CGFloat)offsetForDynamicWidth:(GVLabel *)label {
+- (CGFloat)offsetForDynamicWidth:(UILabel *)label {
     CGFloat width = CGRectGetWidth(self.bounds) / 2.f;
     CGFloat offset;
     if (width < label.intrinsicContentSize.width) {
@@ -203,10 +203,16 @@ NSString *const kFirstTouch = @"FirstTouch";
 }
 
 - (void)defaultValues {
-    GVLabel *firstLabel = [self.allLabels firstObject];
+    UILabel *firstLabel = [self.allLabels firstObject];
     firstLabel.textColor = [UIColor whiteColor];
     self.neighborTitleColor = [UIColor lightGrayColor];
     self.centerTitleColor = [UIColor whiteColor];
+}
+
+- (void)defaultsValuesForLabel:(UILabel *)label {
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor lightGrayColor];
+    label.textAlignment = NSTextAlignmentCenter;
 }
 
 @end

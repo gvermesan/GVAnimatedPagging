@@ -9,6 +9,7 @@
 #import "GVMainViewController.h"
 #import "GVAnimatedPaging.h"
 #import "GVContainer.h"
+#include "GVDataSource.h"
 
 #define DEVICE_IS_IPAD ( UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM())
 
@@ -22,7 +23,7 @@
 @property (nonatomic, strong) UIView *greenView;
 @property (nonatomic, strong) UIView *yellowView;
 
-@property (nonatomic, strong) NSMutableArray *mutableArray;
+@property (nonatomic, strong) NSMutableArray *allViews;
 
 @end
 
@@ -32,66 +33,64 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"Animated Paging";
-    self.mutableArray = [NSMutableArray array];
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    [self.view addSubview:self.animatedPaging];
-    
+
+    self.allViews = [NSMutableArray array];
+
     self.tableview1 = [[UITableView alloc] initWithFrame:CGRectZero
                                                           style:UITableViewStylePlain];
     self.tableview1.delegate = self;
     self.tableview1.dataSource = self;
-    [self.mutableArray addObject:self.tableview1];
+    [self.allViews addObject:self.tableview1];
     
     self.redView = [[UIView alloc] initWithFrame:CGRectZero];
     self.redView.backgroundColor = [UIColor redColor];
-    [self.mutableArray addObject:self.redView];
+    [self.allViews addObject:self.redView];
     
     self.tableview2 = [[UITableView alloc] initWithFrame:CGRectZero
                                                                   style:UITableViewStylePlain];
 
     self.tableview2.delegate = self;
     self.tableview2.dataSource = self;
-    [self.mutableArray addObject:self.tableview2];
+    [self.allViews addObject:self.tableview2];
     
     self.greenView = [[UIView alloc] initWithFrame:CGRectZero];
     self.greenView.backgroundColor = [UIColor greenColor];
-    [self.mutableArray addObject:self.greenView];
+    [self.allViews addObject:self.greenView];
     
     self.tableview3 = [[UITableView alloc] initWithFrame:CGRectZero
                                                    style:UITableViewStylePlain];
     self.tableview3.delegate = self;
     self.tableview3.dataSource = self;
-    [self.mutableArray addObject:self.tableview3];
+    [self.allViews addObject:self.tableview3];
 
     self.yellowView = [[UIView alloc] initWithFrame:CGRectZero];
     self.yellowView.backgroundColor = [UIColor yellowColor];
-    [self.mutableArray addObject:self.yellowView];
+    [self.allViews addObject:self.yellowView];
     
-    /**
-     Datasource *datasource = [Datasource new];
-     datasource.numberOfViewsCallBlock = ^() {
-        return 1;
-     };
-     
-     datasource.containedViewAtIndexCallblock = ^GVContainer*(NSUInteger index) {
-         GVContainer *container = [[GVContainer alloc] initWithHeaderView:weakSelf.redView linkedView:weakSelf.tableview1];
-         return container;
-     };
-
-      self.animatedPaging = [[GVAnimatedPaging alloc] initWithFrame:CGRectZero
-                                                        datasource:datasource];
-     */
-    typeof (self) weakSelf = self;
-    self.animatedPaging = [[GVAnimatedPaging alloc] initWithFrame:CGRectZero];
-    
-    self.animatedPaging.numberOfViewsCallBlock = ^() {
-        return 1;
+    GVDataSource *dataSource = [GVDataSource new];
+    dataSource.numberOfViewsCallBlock = ^() {
+        return [self.allViews count];
     };
     
-    self.animatedPaging.containedViewAtIndexCallblock = ^GVContainer*(NSUInteger index) {
-        GVContainer *container = [[GVContainer alloc] initWithHeaderView:weakSelf.redView linkedView:weakSelf.tableview1];
+    NSArray *strings = @[@"#1 TableView", @"Red View", @"#2 TableView", @"Green View", @"#3 TableView", @"Yellow View"];
+    
+    dataSource.containedViewAtIndexCallblock = ^(NSUInteger index) {
+        
+        UIView *view = self.allViews[index];
+        NSString *string = strings[index];
+        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:string];
+        GVContainer *container = [[GVContainer alloc] initWithHeaderText:attributedString
+                                                    linkedView:view];
         return container;
     };
+    
+    dataSource.headerHeightCallblock = ^() {
+        return 60.f;
+    };
+    
+    self.animatedPaging = [[GVAnimatedPaging alloc] initWithFrame:CGRectZero andDataSource:dataSource];
+    [self.view addSubview:self.animatedPaging];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -100,19 +99,19 @@
     CGFloat headerHeight = 60.f;
     self.tableview1.frame = CGRectMake(0.0,
                                        0.0,
-                                       CGRectGetWidth(self.animatedPaging.bounds),
+                                       CGRectGetWidth(self.view.bounds),
                                        CGRectGetHeight(self.view.bounds) - headerHeight);
     self.tableview2.frame = CGRectMake(0.f,
                                        0.0,
-                                       CGRectGetWidth(self.animatedPaging.bounds),
+                                       CGRectGetWidth(self.view.bounds),
                                        CGRectGetHeight(self.view.bounds) - headerHeight);
     self.tableview3.frame = CGRectMake(0.f,
                                        0.0,
-                                       CGRectGetWidth(self.animatedPaging.bounds),
+                                       CGRectGetWidth(self.view.bounds),
                                        CGRectGetHeight(self.view.bounds) - headerHeight);
     self.redView.frame = CGRectMake(0.f,
                                     0.0,
-                                    CGRectGetWidth(self.animatedPaging.bounds),
+                                    CGRectGetWidth(self.view.bounds),
                                     CGRectGetHeight(self.view.bounds) - headerHeight);
     
     self.greenView.frame = CGRectMake(0.f,
@@ -121,7 +120,7 @@
                                     CGRectGetHeight(self.view.bounds) - headerHeight);
     self.yellowView.frame = CGRectMake(0.f,
                                     0.0,
-                                    CGRectGetWidth(self.animatedPaging.bounds),
+                                    CGRectGetWidth(self.view.bounds),
                                     CGRectGetHeight(self.view.bounds) - headerHeight);
     
 }
@@ -147,21 +146,10 @@
     cell.textLabel.text = @"Gabriel Vermesan";
     return cell;
 }
-#pragma mark - Property
 
-//- (GVAnimatedPaging *)animatedPaging {
-//    if (!_animatedPaging) {
-//        NSArray *names = @[@"#1 TableView",
-//                           @"Red View",
-//                           @"#2 TableView",
-//                           @"Green Viewuyy",
-//                           @"#3 TableView",
-//                           @"Yellow View"];
-//        
-//        _animatedPaging = [[GVAnimatedPaging alloc] initWithHeaderHeight:60.f andHeaderNames:names];
-//        _animatedPaging.backgroundColor = [UIColor clearColor];
-//    }
-//    return _animatedPaging;
-//}
-
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.allViews addObject:self.greenView];
+    
+}
 @end

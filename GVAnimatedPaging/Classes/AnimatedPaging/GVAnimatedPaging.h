@@ -9,22 +9,13 @@
 @import UIKit;
 @class GVHeader;
 @class GVContainer;
-
-typedef CGFloat(^HeaderHeight)(void);
-typedef GVContainer* (^ContainerViewAtIndex)(NSUInteger);
-typedef NSInteger(^NumberOfViews)(void);
-
+@class GVDataSource;
 
 @interface GVAnimatedPaging : UIView
 
-- (instancetype)initWithHeaderText:(NSAttributedString *)attributedString andContainedView:(UIView *)view;
+- (instancetype)initWithFrame:(CGRect)frame
+                andDataSource:(GVDataSource *)dataSource;
 
-@property (nonatomic, assign) CGFloat headerHeight;
-
-@property (nonatomic, copy) HeaderHeight headerHeightCallblock;
-@property (nonatomic, copy) ContainerViewAtIndex containedViewAtIndexCallblock;
-@property (nonatomic, copy) NumberOfViews numberOfViewsCallBlock;
-
-- (void)reload;
+@property (nonatomic, strong, readonly) GVDataSource *dataSource;
 
 @end

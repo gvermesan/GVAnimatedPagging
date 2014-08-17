@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1ED04FE9199FBD4300D7688B /* GVDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ED04FE8199FBD4200D7688B /* GVDataSource.m */; };
 		1EDFDFD219963BCD0055E374 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDFDFD119963BCD0055E374 /* Foundation.framework */; };
 		1EDFDFD419963BCD0055E374 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDFDFD319963BCD0055E374 /* CoreGraphics.framework */; };
 		1EDFDFD619963BCD0055E374 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDFDFD519963BCD0055E374 /* UIKit.framework */; };
@@ -24,7 +25,6 @@
 		7DE197CE199785BA00D2FCB3 /* GVAnimatedPaging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE197C7199785BA00D2FCB3 /* GVAnimatedPaging.m */; };
 		7DE197CF199785BA00D2FCB3 /* GVHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE197C9199785BA00D2FCB3 /* GVHeader.m */; };
 		7DE197D0199785BA00D2FCB3 /* GVIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE197CB199785BA00D2FCB3 /* GVIndicatorView.m */; };
-		7DE197D1199785BA00D2FCB3 /* GVLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE197CD199785BA00D2FCB3 /* GVLabel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1ED04FE7199FBD4200D7688B /* GVDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GVDataSource.h; path = DataSource/GVDataSource.h; sourceTree = "<group>"; };
+		1ED04FE8199FBD4200D7688B /* GVDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GVDataSource.m; path = DataSource/GVDataSource.m; sourceTree = "<group>"; };
 		1EDFDFCE19963BCD0055E374 /* GVAnimatedPagging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GVAnimatedPagging.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EDFDFD119963BCD0055E374 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1EDFDFD319963BCD0055E374 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -64,8 +66,6 @@
 		7DE197C9199785BA00D2FCB3 /* GVHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GVHeader.m; sourceTree = "<group>"; };
 		7DE197CA199785BA00D2FCB3 /* GVIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVIndicatorView.h; sourceTree = "<group>"; };
 		7DE197CB199785BA00D2FCB3 /* GVIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GVIndicatorView.m; sourceTree = "<group>"; };
-		7DE197CC199785BA00D2FCB3 /* GVLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVLabel.h; sourceTree = "<group>"; };
-		7DE197CD199785BA00D2FCB3 /* GVLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GVLabel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +92,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1ED04FE6199FBD2300D7688B /* DataSource */ = {
+			isa = PBXGroup;
+			children = (
+				1ED04FE7199FBD4200D7688B /* GVDataSource.h */,
+				1ED04FE8199FBD4200D7688B /* GVDataSource.m */,
+			);
+			name = DataSource;
+			sourceTree = "<group>";
+		};
 		1EDFDFC519963BCD0055E374 = {
 			isa = PBXGroup;
 			children = (
@@ -157,8 +166,6 @@
 			children = (
 				7DE197CA199785BA00D2FCB3 /* GVIndicatorView.h */,
 				7DE197CB199785BA00D2FCB3 /* GVIndicatorView.m */,
-				7DE197CC199785BA00D2FCB3 /* GVLabel.h */,
-				7DE197CD199785BA00D2FCB3 /* GVLabel.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -209,6 +216,7 @@
 			children = (
 				7DD33DD1199F9581004149B1 /* GVContainer.h */,
 				7DD33DD2199F9581004149B1 /* GVContainer.m */,
+				1ED04FE6199FBD2300D7688B /* DataSource */,
 				7DD33DD4199F9F07004149B1 /* Views */,
 			);
 			path = AnimatedPaging;
@@ -314,7 +322,7 @@
 				7DE197BF1997857600D2FCB3 /* GVMainViewController.m in Sources */,
 				7DE197C11997857600D2FCB3 /* GVAppDelegate.m in Sources */,
 				7DE197C31997857600D2FCB3 /* main.m in Sources */,
-				7DE197D1199785BA00D2FCB3 /* GVLabel.m in Sources */,
+				1ED04FE9199FBD4300D7688B /* GVDataSource.m in Sources */,
 				7DE197D0199785BA00D2FCB3 /* GVIndicatorView.m in Sources */,
 				7DE197CF199785BA00D2FCB3 /* GVHeader.m in Sources */,
 				7DE197CE199785BA00D2FCB3 /* GVAnimatedPaging.m in Sources */,

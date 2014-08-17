@@ -8,27 +8,30 @@
 
 #import "GVAnimatedPaging.h"
 #import "GVHeader.h"
+#import "GVDataSource.h"
+#import "GVContainer.h"
 
 #define GVFloatsEqual(_f1, _f2)    (fabs( (_f1) - (_f2) ) < FLT_EPSILON)
 
 @interface GVAnimatedPaging()<UIScrollViewDelegate>
+
+@property (nonatomic, strong) GVDataSource *dataSource;
 
 @property (nonatomic, assign) CGFloat height;
 @property (nonatomic, strong) NSArray *headerNames;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) GVHeader *header;
 
-@property (nonatomic, copy) NSAttributedString *attributedString;
-@property (nonatomic, strong) UIView *containedView;
-
-@property (nonatomic, strong) NSMutableOrderedSet *allViews;
+@property (nonatomic, strong) NSMutableArray *allAttributedStrings;
+@property (nonatomic, strong) NSMutableArray *allViews;
+@property (nonatomic, assign) CGFloat headerHeight;
 
 
 @end
 
 @implementation GVAnimatedPaging
 
-NSString *const kTouchMovedNotified = @"touchesMoved";
+NSString *const kTouchMovedNotified = @"TouchesMoved";
 NSString *const kAllTouchesNotified = @"AllTouches";
 NSString *const kFirstTouchNotified = @"FirstTouch";
 
@@ -36,37 +39,42 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (instancetype)initWithHeaderText:(NSAttributedString *)attributedString andContainedView:(UIView *)view {
-    NSParameterAssert(attributedString.length);
-    NSParameterAssert(view);
-    
-    self = [super init];
+- (instancetype)initWithFrame:(CGRect)frame
+                andDataSource:(GVDataSource *)dataSource {
+    self = [super initWithFrame:frame];
     if (self) {
-        self.attributedString = attributedString;
-        self.containedView = view;
+        self.dataSource = dataSource;
+        [self addSubview:self.header];
+        [self addSubview:self.scrollView];
         
-        [self.allViews addObject:view];
-        
-        [self defaultValues];
+        [self reload];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(headerTouched:) name:kTouchMovedNotified object:nil];
     }
     return self;
 }
 
-
 - (void)reload {
-    NSParameterAssert(self.numberOfViewsCallBlock);
-    NSParameterAssert(self.containedViewAtIndexCallblock);
+    NSParameterAssert(self.dataSource.numberOfViewsCallBlock);
+    NSParameterAssert(self.dataSource.containedViewAtIndexCallblock);
 
-    self
-    NSInteger count = self.numberOfViewsCallBlock();
-    for (NSUInteger index = 0;index < count; index++) {
-        GVContainer *container = self.containedViewAtIndexCallblock(index);
-        
+    [self.allViews removeAllObjects];
+    [self.allAttributedStrings removeAllObjects];
+    
+    NSInteger count = self.dataSource.numberOfViewsCallBlock();
+    for (NSUInteger index = 0; index < count; index++) {
+        GVContainer *container = self.dataSource.containedViewAtIndexCallblock(index);
+        [self.allViews addObject:container.linkedView];
+        [self.allAttributedStrings addObject:container.attributedString];
     }
+    [self addViewsOverScrollView:self.allViews];
+    self.header.names = self.allAttributedStrings;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    
+    self.headerHeight = self.dataSource.headerHeightCallblock();
+    
     self.header.frame = CGRectMake(0.f,
                                    0.f,
                                    CGRectGetWidth(self.bounds),
@@ -75,8 +83,7 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
                                        CGRectGetMaxY(self.header.frame),
                                        CGRectGetWidth(self.bounds),
                                        CGRectGetHeight(self.bounds) - CGRectGetHeight(self.header.bounds));
-    
-    [self addViewsOverScrollView:self.allViews];
+    [self reload];
     NSInteger count = [self.allViews count];
     self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.scrollView.bounds) * count,
                                              CGRectGetHeight(self.scrollView.bounds));
@@ -128,14 +135,6 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
 
 #pragma mark - Property
 
-- (void)setHeaderHeight:(CGFloat)headerHeight {
-    if (GVFloatsEqual(_headerHeight, headerHeight)) {
-        return;
-    }
-    _headerHeight = headerHeight;
-    [self setNeedsLayout];
-}
-
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
@@ -153,9 +152,23 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     return _header;
 }
 
+- (NSMutableArray *)allViews {
+    if (!_allViews) {
+        _allViews = [NSMutableArray array];
+    }
+    return _allViews;
+}
+
+- (NSMutableArray *)allAttributedStrings {
+    if (!_allAttributedStrings) {
+        _allAttributedStrings = [NSMutableArray array];
+    }
+    return _allAttributedStrings;
+}
+
 #pragma mark - Private methods
 
-- (void)addViewsOverScrollView:(NSMutableOrderedSet *)views {
+- (void)addViewsOverScrollView:(NSArray *)views {
     NSUInteger count = [views count];
     for (NSUInteger i = 0; i < count; i++) {
         UIView *view = views[i];

@@ -9,26 +9,23 @@
 #import "GVContainer.h"
 #import "GVAnimatedPaging.h"
 
-
-#define GVFloatsEqual(_f1, _f2)    (fabs( (_f1) - (_f2) ) < FLT_EPSILON)
-
 @interface GVContainer ()
 
-@property (nonatomic, strong, readwrite) UIView *headerView;
+@property (nonatomic, copy, readwrite) NSAttributedString *attributedString;
 @property (nonatomic, strong, readwrite) UIView *linkedView;
 
 @end
 
 @implementation GVContainer
 
-- (instancetype)initWithHeaderView:(UIView *)headerView
+- (instancetype)initWithHeaderText:(NSAttributedString *)attributedString
                         linkedView:(UIView *)linkedView {
     
-    NSParameterAssert(headerView);
+    NSParameterAssert(attributedString.length);
     NSParameterAssert(linkedView);
     self = [super init];
     if (self) {
-        self.headerView = headerView;
+        self.attributedString = attributedString;
         self.linkedView = linkedView;
     }
     return self;

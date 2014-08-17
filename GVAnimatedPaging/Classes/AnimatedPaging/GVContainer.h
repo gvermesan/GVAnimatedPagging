@@ -10,10 +10,10 @@
 
 @interface GVContainer : NSObject
 
-- (instancetype)initWithHeaderView:(UIView *)headerView
+- (instancetype)initWithHeaderText:(NSAttributedString *)attributedString
                         linkedView:(UIView *)linkedView;
 
-@property (nonatomic, strong, readonly) UIView *headerView;
+@property (nonatomic, copy, readonly) NSAttributedString *attributedString;
 @property (nonatomic, strong, readonly) UIView *linkedView;
 
 @end
