@@ -18,4 +18,6 @@
 
 @property (nonatomic, strong, readonly) GVDataSource *dataSource;
 
+- (void)reloadData;
+
 @end

@@ -9,11 +9,16 @@
 @import UIKit;
 
 @class GVIndicatorView;
+
+typedef void(^GVHeaderTouched)(NSDictionary *);
+
 @interface GVHeader : UIView
 
 @property (nonatomic, readonly, strong) GVIndicatorView *indicatorview;
 
 @property (nonatomic, strong) NSArray *names;
+
+//Header title properties
 @property (nonatomic, strong) UIFont *headerNameFont;
 @property (nonatomic, strong) NSAttributedString *attributedString;
 @property (nonatomic, assign) CGFloat indicatorHeight;
@@ -23,5 +28,8 @@
 //Scroll properties
 @property (nonatomic, assign) CGFloat contentOffsetX;
 @property (nonatomic, assign) CGFloat velocityValue;
+
+//Blocks propertis
+@property (nonatomic, copy) GVHeaderTouched headerTouched;
 
 @end

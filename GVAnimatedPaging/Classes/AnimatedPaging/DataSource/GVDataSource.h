@@ -9,16 +9,14 @@
 #import <Foundation/Foundation.h>
 @class GVContainer;
 
-typedef CGFloat(^HeaderHeight)(void);
-typedef GVContainer* (^ContainerViewAtIndex)(NSUInteger);
-typedef NSUInteger(^NumberOfViews)(void);
-typedef void(^ReloadData)();
+typedef CGFloat(^GVHeaderHeight)(void);
+typedef GVContainer* (^GVContainerViewAtIndex)(NSUInteger);
+typedef NSUInteger(^GVNumberOfViews)(void);
 
 @interface GVDataSource : NSObject
 
-@property (nonatomic, copy) HeaderHeight headerHeightCallblock;
-@property (nonatomic, copy) ContainerViewAtIndex containedViewAtIndexCallblock;
-@property (nonatomic, copy) NumberOfViews numberOfViewsCallBlock;
-@property (nonatomic, copy) ReloadData reloadDataCallBlock;
+@property (nonatomic, copy) GVHeaderHeight headerHeightCallblock;
+@property (nonatomic, copy) GVContainerViewAtIndex containedViewAtIndexCallblock;
+@property (nonatomic, copy) GVNumberOfViews numberOfViewsCallBlock;
 
 @end

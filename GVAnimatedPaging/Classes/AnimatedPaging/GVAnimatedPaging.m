@@ -7,19 +7,17 @@
 //
 
 #import "GVAnimatedPaging.h"
+#import "GVScrollView.h"
 #import "GVHeader.h"
 #import "GVDataSource.h"
 #import "GVContainer.h"
 
-#define GVFloatsEqual(_f1, _f2)    (fabs( (_f1) - (_f2) ) < FLT_EPSILON)
+#define GVWeakSelf  __weak typeof(self) weakSelf = self
 
 @interface GVAnimatedPaging()<UIScrollViewDelegate>
 
 @property (nonatomic, strong) GVDataSource *dataSource;
-
-@property (nonatomic, assign) CGFloat height;
-@property (nonatomic, strong) NSArray *headerNames;
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) GVScrollView *scrollView;
 @property (nonatomic, strong) GVHeader *header;
 
 @property (nonatomic, strong) NSMutableArray *allAttributedStrings;
@@ -31,13 +29,8 @@
 
 @implementation GVAnimatedPaging
 
-NSString *const kTouchMovedNotified = @"TouchesMoved";
 NSString *const kAllTouchesNotified = @"AllTouches";
 NSString *const kFirstTouchNotified = @"FirstTouch";
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
 
 - (instancetype)initWithFrame:(CGRect)frame
                 andDataSource:(GVDataSource *)dataSource {
@@ -47,13 +40,32 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
         [self addSubview:self.header];
         [self addSubview:self.scrollView];
         
-        [self reload];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(headerTouched:) name:kTouchMovedNotified object:nil];
+        [self reloadData];
     }
     return self;
 }
 
-- (void)reload {
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    self.headerHeight = self.dataSource.headerHeightCallblock();
+    
+    self.header.frame = CGRectMake(0.f,
+                                   0.f,
+                                   CGRectGetWidth(self.bounds),
+                                   self.headerHeight);
+    
+    self.scrollView.frame = CGRectMake(0.f,
+                                       CGRectGetMaxY(self.header.frame),
+                                       CGRectGetWidth(self.bounds),
+                                       CGRectGetHeight(self.bounds) - CGRectGetHeight(self.header.bounds));
+
+}
+
+#pragma mark - Public methods
+
+- (void)reloadData {
     NSParameterAssert(self.dataSource.numberOfViewsCallBlock);
     NSParameterAssert(self.dataSource.containedViewAtIndexCallblock);
 
@@ -66,88 +78,31 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
         [self.allViews addObject:container.linkedView];
         [self.allAttributedStrings addObject:container.attributedString];
     }
-    [self addViewsOverScrollView:self.allViews];
-    self.header.names = self.allAttributedStrings;
+    self.scrollView.allViews = [self.allViews mutableCopy];
+    self.header.names = [self.allAttributedStrings mutableCopy];
 }
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
-    self.headerHeight = self.dataSource.headerHeightCallblock();
-    
-    self.header.frame = CGRectMake(0.f,
-                                   0.f,
-                                   CGRectGetWidth(self.bounds),
-                                   self.headerHeight);
-    self.scrollView.frame = CGRectMake(0.f,
-                                       CGRectGetMaxY(self.header.frame),
-                                       CGRectGetWidth(self.bounds),
-                                       CGRectGetHeight(self.bounds) - CGRectGetHeight(self.header.bounds));
-    [self reload];
-    NSInteger count = [self.allViews count];
-    self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.scrollView.bounds) * count,
-                                             CGRectGetHeight(self.scrollView.bounds));
-    
-    
-    
-}
-
-#pragma NSNotificationCenter method
-
-- (void)headerTouched:(NSNotification *)notif {
-    NSDictionary *dict = notif.object;
-    NSValue *value = dict[kAllTouchesNotified];
-    CGPoint currentTouchPoint = [value CGPointValue];
-    CGFloat firstTouchX = [dict[kFirstTouchNotified] floatValue];
-   
-    BOOL flag = (currentTouchPoint.x < firstTouchX);
-    
-    NSUInteger currentPage = flag ? (self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds)) + 1 :
-                                    ceilf((self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds))) - 1;
-
-    CGFloat newContentOffsetX = flag ? currentPage * CGRectGetWidth(self.bounds) - currentTouchPoint.x :
-                                       (currentPage + 1) * CGRectGetWidth(self.bounds) - currentTouchPoint.x;
-    
-    if (self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds) >= self.scrollView.contentSize.width && flag) {
-        currentPage -= 1;
-        return;
-    }
-    
-    if (newContentOffsetX  < 0 && !flag) {
-        return;
-    }
-    
-    self.scrollView.contentOffset = CGPointMake(newContentOffsetX, 0.f);
-    [self.scrollView scrollRectToVisible:CGRectMake(currentPage * CGRectGetWidth(self.bounds),
-                                                    0.f,
-                                                    CGRectGetWidth(self.bounds),
-                                                    CGRectGetHeight(self.scrollView.bounds))
-                                animated:YES];
-}
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    self.header.contentOffsetX = scrollView.contentOffset.x;
-    self.header.velocityValue = fabsf([[scrollView panGestureRecognizer] velocityInView:self].x);
-}
-
 
 #pragma mark - Property
 
-- (UIScrollView *)scrollView {
+- (GVScrollView *)scrollView {
     if (!_scrollView) {
-        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
-        _scrollView.backgroundColor = [UIColor lightGrayColor];
-        _scrollView.pagingEnabled = YES;
-        _scrollView.delegate = self;
+        GVWeakSelf;
+        _scrollView = [[GVScrollView alloc] initWithFrame:CGRectZero];
+        _scrollView.scrollViewDelegateValues = ^(CGFloat contentOffsetX, CGFloat velocity) {
+            weakSelf.header.contentOffsetX = contentOffsetX;
+            weakSelf.header.velocityValue = velocity;
+        };
     }
     return _scrollView;
 }
 
 - (GVHeader *)header {
     if (!_header) {
+        GVWeakSelf;
         _header = [[GVHeader alloc] initWithFrame:CGRectZero];
+        _header.headerTouched = ^(NSDictionary *dictionary) {
+            [weakSelf headerTouched:dictionary];
+        };
     }
     return _header;
 }
@@ -168,16 +123,34 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
 
 #pragma mark - Private methods
 
-- (void)addViewsOverScrollView:(NSArray *)views {
-    NSUInteger count = [views count];
-    for (NSUInteger i = 0; i < count; i++) {
-        UIView *view = views[i];
-        
-        CGRect newFrame = view.frame;
-        newFrame.origin.x = CGRectGetWidth(view.bounds) * i;
-        view.frame = newFrame;
-        [self.scrollView addSubview:view];
+- (void)headerTouched:(NSDictionary *)dict {
+    NSValue *value = dict[kAllTouchesNotified];
+    CGPoint currentTouchPoint = [value CGPointValue];
+    CGFloat firstTouchX = [dict[kFirstTouchNotified] floatValue];
+    
+    BOOL flag = (currentTouchPoint.x < firstTouchX);
+    
+    NSUInteger currentPage = flag ? (self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds)) + 1 :
+    ceilf((self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds))) - 1;
+    
+    CGFloat newContentOffsetX = flag ? currentPage * CGRectGetWidth(self.bounds) - currentTouchPoint.x - (CGRectGetWidth(self.bounds) - firstTouchX):
+                                       (currentPage + 1) * CGRectGetWidth(self.bounds) - currentTouchPoint.x + firstTouchX;
+    
+    if (self.scrollView.contentOffset.x + CGRectGetWidth(self.bounds) >= self.scrollView.contentSize.width && flag) {
+        currentPage -= 1;
+        return;
     }
+    
+    if (newContentOffsetX  < 0 && !flag) {
+        return;
+    }
+    
+    self.scrollView.contentOffset = CGPointMake(newContentOffsetX, 0.f);
+    [self.scrollView scrollRectToVisible:CGRectMake(currentPage * CGRectGetWidth(self.bounds),
+                                                    0.f,
+                                                    CGRectGetWidth(self.bounds),
+                                                    CGRectGetHeight(self.scrollView.bounds))
+                                animated:YES];
 }
 
 - (void)defaultValues {

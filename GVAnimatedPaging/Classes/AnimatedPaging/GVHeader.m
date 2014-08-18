@@ -12,7 +12,7 @@
 #define GVFloatsEqual(_f1, _f2)    (fabs( (_f1) - (_f2) ) < FLT_EPSILON)
 #define DEVICE_IS_IPAD ( UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM())
 
-@interface GVHeader()
+@interface GVHeader() <UIGestureRecognizerDelegate>
 @property (nonatomic, strong) GVIndicatorView *indicatorView;
 @property (nonatomic, strong) NSMutableArray *allLabels;
 @property (nonatomic, assign) CGFloat headerCenterX;
@@ -24,7 +24,6 @@
 
 @implementation GVHeader
 
-NSString *const kTouchMoved = @"TouchesMoved";
 NSString *const kAllTouches = @"AllTouches";
 NSString *const kFirstTouch = @"FirstTouch";
 
@@ -35,7 +34,8 @@ NSString *const kFirstTouch = @"FirstTouch";
         self.indicatorHeight = DEVICE_IS_IPAD ? 20.f : 15.f;
         self.contentOffsetX = 0.f;
         self.increment = 0.f;
-        [self addSubview:self.indicatorView];
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureHandle:)];
+        [self addGestureRecognizer:panGesture];
     }
     return self;
 }
@@ -60,15 +60,15 @@ NSString *const kFirstTouch = @"FirstTouch";
     [self defaultValues];
 }
 
-//- (void)setAttributedString:(NSAttributedString *)attributedString {
-//    if ([_attributedString isEqualToAttributedString:attributedString]) {
-//        return;
-//    }
-//    _attributedString = attributedString;
-//    for (UILabel *label in self.allLabels) {
-//        label.attributedText = _attributedString;
-//    }
-//}
+- (void)setAttributedString:(NSAttributedString *)attributedString {
+    if ([_attributedString isEqualToAttributedString:attributedString]) {
+        return;
+    }
+    _attributedString = attributedString;
+    for (UILabel *label in self.allLabels) {
+        label.attributedText = _attributedString;
+    }
+}
 
 - (void)setIndicatorHeight:(CGFloat)indicatorHeight {
     if (GVFloatsEqual(_indicatorHeight, indicatorHeight)) {
@@ -108,22 +108,35 @@ NSString *const kFirstTouch = @"FirstTouch";
     return _allLabels;
 }
 
-#pragma mark - UIPanGestureRecognizer Action method
+#pragma mark - UIPanGestureRecognizer action methods
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    CGPoint firstTouch = [touch locationInView:self];
-    self.touchedPoint = firstTouch.x;
+- (void)panGestureHandle:(UIPanGestureRecognizer *)gesture {
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+            self.touchedPoint = [gesture locationInView:self].x;
+            break;
+            
+        case UIGestureRecognizerStateChanged:
+            [self handleChangeState:gesture];
+            break;
+            
+        default:
+            break;
+    }
 }
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+
+
+#pragma mark - Private method
+
+- (void)handleChangeState:(UIPanGestureRecognizer *)gesture {
+    CGPoint touchPoint = [gesture locationInView:self];
     NSValue *value = [NSValue valueWithCGPoint:touchPoint];
     NSDictionary *dictionary = @{kFirstTouch : @(self.touchedPoint),
                                  kAllTouches : value};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kTouchMoved object:dictionary];
+    if (self.headerTouched) {
+        self.headerTouched(dictionary);
+    }
 }
-
-#pragma mark - Private method
 
 - (void)recalculateNewLabelCenter:(CGFloat)offset {
     NSUInteger count = [self.allLabels count];
@@ -131,18 +144,16 @@ NSString *const kFirstTouch = @"FirstTouch";
     for (NSUInteger index = 0; index < count; index++) {
         UILabel *currentLabel = self.allLabels[index];
         CGFloat xDirection = offset - self.lastPosition;
-        if (self.velocityValue <= 50) {
-            self.headerCenterX -= xDirection/ 2.f + self.increment;
-            
-            self.increment = 0.f;
-        } else if (self.velocityValue > 50) {
-            self.increment += 7.f / 16.f * xDirection;
-            //dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                self.headerCenterX -=  xDirection / 16.f;
-            //});
-
-        }
-        //self.headerCenterX -=  xDirection  / 2.f;
+//        if (self.velocityValue <= 50) {
+//            self.headerCenterX -= xDirection/ 2.f + self.increment;
+//            
+//            self.increment = 0.f;
+//        } else if (self.velocityValue > 50) {
+//            self.increment += 7.f / 16.f * xDirection;
+//            self.headerCenterX -=  xDirection / 16.f;
+//
+//        }
+        self.headerCenterX -=  xDirection  / 2.f;
         self.lastPosition = offset;
         
         if (CGRectGetWidth(self.indicatorView.bounds) / 2.f >= CGRectGetMinX(currentLabel.frame) &&
@@ -156,6 +167,8 @@ NSString *const kFirstTouch = @"FirstTouch";
 
 - (void)createLabelsForHeader:(NSArray *)labels {
     NSUInteger count = [labels count];
+    [self.allLabels removeAllObjects];
+    [self.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
     for (NSUInteger index = 0; index < count; index++) {
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         [self defaultsValuesForLabel:label];
@@ -165,6 +178,7 @@ NSString *const kFirstTouch = @"FirstTouch";
         [self addSubview:label];
         [self.allLabels addObject:label];
     }
+    [self addSubview:self.indicatorView];
 }
 
 - (void)setFrameForEachLabel {

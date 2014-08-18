@@ -22,8 +22,10 @@
 @property (nonatomic, strong) UIView *redView;
 @property (nonatomic, strong) UIView *greenView;
 @property (nonatomic, strong) UIView *yellowView;
+@property (nonatomic, strong) UIView *purpleView;
 
 @property (nonatomic, strong) NSMutableArray *allViews;
+@property (nonatomic, strong) NSMutableArray *allAttributedStrings;
 
 @end
 
@@ -36,6 +38,7 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
     self.allViews = [NSMutableArray array];
+    self.allAttributedStrings = [NSMutableArray array];
 
     self.tableview1 = [[UITableView alloc] initWithFrame:CGRectZero
                                                           style:UITableViewStylePlain];
@@ -68,17 +71,20 @@
     self.yellowView.backgroundColor = [UIColor yellowColor];
     [self.allViews addObject:self.yellowView];
     
+    self.purpleView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.purpleView.backgroundColor = [UIColor purpleColor];
+    
     GVDataSource *dataSource = [GVDataSource new];
     dataSource.numberOfViewsCallBlock = ^() {
         return [self.allViews count];
     };
     
-    NSArray *strings = @[@"#1 TableView", @"Red View", @"#2 TableView", @"Green View", @"#3 TableView", @"Yellow View"];
+    [self.allAttributedStrings addObjectsFromArray:@[@"#1 TableView", @"Red View", @"#2 TableView", @"Green View", @"#3 TableView", @"Yellow View"]];
     
     dataSource.containedViewAtIndexCallblock = ^(NSUInteger index) {
         
         UIView *view = self.allViews[index];
-        NSString *string = strings[index];
+        NSString *string = self.allAttributedStrings[index];
         NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:string];
         GVContainer *container = [[GVContainer alloc] initWithHeaderText:attributedString
                                                     linkedView:view];
@@ -97,31 +103,36 @@
     [super viewDidLayoutSubviews];
     self.animatedPaging.frame = self.view.bounds;
     CGFloat headerHeight = 60.f;
-    self.tableview1.frame = CGRectMake(0.0,
-                                       0.0,
-                                       CGRectGetWidth(self.view.bounds),
-                                       CGRectGetHeight(self.view.bounds) - headerHeight);
-    self.tableview2.frame = CGRectMake(0.f,
-                                       0.0,
-                                       CGRectGetWidth(self.view.bounds),
-                                       CGRectGetHeight(self.view.bounds) - headerHeight);
-    self.tableview3.frame = CGRectMake(0.f,
-                                       0.0,
-                                       CGRectGetWidth(self.view.bounds),
-                                       CGRectGetHeight(self.view.bounds) - headerHeight);
-    self.redView.frame = CGRectMake(0.f,
-                                    0.0,
-                                    CGRectGetWidth(self.view.bounds),
-                                    CGRectGetHeight(self.view.bounds) - headerHeight);
-    
-    self.greenView.frame = CGRectMake(0.f,
-                                    0.0,
-                                    CGRectGetWidth(self.animatedPaging.bounds),
-                                    CGRectGetHeight(self.view.bounds) - headerHeight);
-    self.yellowView.frame = CGRectMake(0.f,
-                                    0.0,
-                                    CGRectGetWidth(self.view.bounds),
-                                    CGRectGetHeight(self.view.bounds) - headerHeight);
+//    self.tableview1.frame = CGRectMake(0.0,
+//                                       0.0,
+//                                       CGRectGetWidth(self.view.bounds),
+//                                       CGRectGetHeight(self.view.bounds) - headerHeight);
+//    self.tableview2.frame = CGRectMake(0.f,
+//                                       0.0,
+//                                       CGRectGetWidth(self.view.bounds),
+//                                       CGRectGetHeight(self.view.bounds) - headerHeight);
+//    self.tableview3.frame = CGRectMake(0.f,
+//                                       0.0,
+//                                       CGRectGetWidth(self.view.bounds),
+//                                       CGRectGetHeight(self.view.bounds) - headerHeight);
+//    self.redView.frame = CGRectMake(0.f,
+//                                    0.0,
+//                                    CGRectGetWidth(self.view.bounds),
+//                                    CGRectGetHeight(self.view.bounds) - headerHeight);
+//    
+//    self.greenView.frame = CGRectMake(0.f,
+//                                    0.0,
+//                                    CGRectGetWidth(self.animatedPaging.bounds),
+//                                    CGRectGetHeight(self.view.bounds) - headerHeight);
+//    self.yellowView.frame = CGRectMake(0.f,
+//                                    0.0,
+//                                    CGRectGetWidth(self.view.bounds),
+//                                    CGRectGetHeight(self.view.bounds) - headerHeight);
+//    
+//    self.purpleView.frame = CGRectMake(0.f,
+//                                       0.0,
+//                                       CGRectGetWidth(self.view.bounds),
+//                                       CGRectGetHeight(self.view.bounds) - headerHeight);
     
 }
 
@@ -147,9 +158,10 @@
     return cell;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [self.allViews addObject:self.greenView];
-    
-}
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//    [self.allViews addObject:self.purpleView];
+//    [self.allAttributedStrings addObject:@"New view"];
+//    [self.animatedPaging reloadData];
+//}
 @end
