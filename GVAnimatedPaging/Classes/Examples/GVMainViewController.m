@@ -122,7 +122,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     }
     
-    cell.textLabel.text = @"Gabriel Vermesan";
+    cell.textLabel.text = @"This is a simple example.";
     return cell;
 }
 

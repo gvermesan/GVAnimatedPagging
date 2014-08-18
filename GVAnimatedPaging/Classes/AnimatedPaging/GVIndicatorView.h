@@ -10,7 +10,7 @@
 
 @interface GVIndicatorView : UIView
 
-@property (nonatomic, strong) UIColor *indicatorFillColor;
-@property (nonatomic, strong) UIColor *indicatorFrameColor;
+@property (nonatomic, strong) UIColor *indicatorFillColor; // Default is darkGreyColor;
+@property (nonatomic, strong) UIColor *indicatorFrameColor; // Default is blackColor
 
 @end

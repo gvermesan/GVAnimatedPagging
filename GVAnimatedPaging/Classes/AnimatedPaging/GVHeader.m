@@ -120,6 +120,10 @@ NSString *const kFirstTouch = @"FirstTouch";
             [self handleChangeState:gesture];
             break;
             
+        case UIGestureRecognizerStateEnded:
+            [self handleFinishedState:gesture];
+            break;
+            
         default:
             break;
     }
@@ -133,8 +137,19 @@ NSString *const kFirstTouch = @"FirstTouch";
     NSValue *value = [NSValue valueWithCGPoint:touchPoint];
     NSDictionary *dictionary = @{kFirstTouch : @(self.touchedPoint),
                                  kAllTouches : value};
-    if (self.headerTouched) {
-        self.headerTouched(dictionary);
+    if (self.stateChanged) {
+        self.stateChanged(dictionary);
+    }
+}
+
+- (void)handleFinishedState:(UIPanGestureRecognizer *)gesture {
+    CGFloat endPoint = [gesture locationInView:self].x;
+    CGFloat addToContentOffset = CGRectGetWidth(self.bounds) - (self.touchedPoint - endPoint);
+    if (self.touchedPoint < endPoint) {
+        addToContentOffset = (endPoint - self.touchedPoint + 0.5) - CGRectGetWidth(self.bounds);
+    }
+    if (self.stateFinished) {
+        self.stateFinished(addToContentOffset);
     }
 }
 
@@ -144,15 +159,6 @@ NSString *const kFirstTouch = @"FirstTouch";
     for (NSUInteger index = 0; index < count; index++) {
         UILabel *currentLabel = self.allLabels[index];
         CGFloat xDirection = offset - self.lastPosition;
-//        if (self.velocityValue <= 50) {
-//            self.headerCenterX -= xDirection/ 2.f + self.increment;
-//            
-//            self.increment = 0.f;
-//        } else if (self.velocityValue > 50) {
-//            self.increment += 7.f / 16.f * xDirection;
-//            self.headerCenterX -=  xDirection / 16.f;
-//
-//        }
         self.headerCenterX -=  xDirection  / 2.f;
         self.lastPosition = offset;
         
@@ -197,22 +203,14 @@ NSString *const kFirstTouch = @"FirstTouch";
     }
 }
 
+
+/* ToDo: Animate the header labels when the text is higher than the half of the screen */
 - (CGFloat)calculateLabelWidth:(UILabel *)label {
     CGFloat width = CGRectGetWidth(self.bounds) / 2.f;
-    if (width > label.intrinsicContentSize.width) {
-        return width;
-    }
-    CGFloat additionalWidth = [self offsetForDynamicWidth:label];
-    return label.intrinsicContentSize.width + additionalWidth;
+    return width;
 }
 
 - (CGFloat)offsetForDynamicWidth:(UILabel *)label {
-    CGFloat width = CGRectGetWidth(self.bounds) / 2.f;
-    CGFloat offset;
-    if (width < label.intrinsicContentSize.width) {
-        offset = (label.intrinsicContentSize.width - width);
-        return offset;
-    }
     return 0.f;
 }
 

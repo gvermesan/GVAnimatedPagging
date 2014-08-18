@@ -100,8 +100,12 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     if (!_header) {
         GVWeakSelf;
         _header = [[GVHeader alloc] initWithFrame:CGRectZero];
-        _header.headerTouched = ^(NSDictionary *dictionary) {
+        _header.stateChanged = ^(NSDictionary *dictionary) {
             [weakSelf headerTouched:dictionary];
+        };
+        
+        _header.stateFinished = ^(CGFloat xCoord) {
+            weakSelf.scrollView.currentPage = (weakSelf.scrollView.contentOffset.x + xCoord) / CGRectGetWidth(weakSelf.scrollView.bounds);
         };
     }
     return _header;

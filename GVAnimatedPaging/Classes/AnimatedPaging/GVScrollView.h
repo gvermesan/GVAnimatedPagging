@@ -15,6 +15,8 @@ typedef void(^GVScrollViewDelegateValues)(CGFloat, CGFloat);
 @property (nonatomic, strong) NSArray *allViews;
 @property (nonatomic, copy) GVScrollViewDelegateValues scrollViewDelegateValues;
 
+@property (nonatomic, assign) NSUInteger currentPage;
+
 - (void)addViewsOverScrollView:(NSArray *)views;
 
 @end

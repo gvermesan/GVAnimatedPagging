@@ -10,8 +10,6 @@
 
 @interface GVScrollView () <UIScrollViewDelegate>
 
-@property (nonatomic, assign) NSUInteger currentPage;
-
 @end
 
 @implementation GVScrollView
