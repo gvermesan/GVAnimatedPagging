@@ -66,8 +66,8 @@
 		7D6CE13719A24DCA007B768B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7D6CE13919A24DCA007B768B /* GVAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVAppDelegate.h; sourceTree = "<group>"; };
 		7D6CE13A19A24DCA007B768B /* GVAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GVAppDelegate.m; sourceTree = "<group>"; };
-		7D6CE13B19A24DCA007B768B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		7D6CE13C19A24DCA007B768B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		7D6CE13B19A24DCA007B768B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
+		7D6CE13C19A24DCA007B768B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../main.m; sourceTree = "<group>"; };
 		7D6CE13E19A24DCA007B768B /* GVAnimatedPaging-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GVAnimatedPaging-Info.plist"; sourceTree = "<group>"; };
 		7D6CE13F19A24DCA007B768B /* GVAnimatedPaging-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GVAnimatedPaging-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -148,12 +148,9 @@
 			isa = PBXGroup;
 			children = (
 				7D6CE12419A24DCA007B768B /* Classes */,
-				7D6CE13619A24DCA007B768B /* InfoPlist.strings */,
 				7D6CE13819A24DCA007B768B /* GVAnimatedPagingTests */,
 				7D6CE13919A24DCA007B768B /* GVAppDelegate.h */,
 				7D6CE13A19A24DCA007B768B /* GVAppDelegate.m */,
-				7D6CE13B19A24DCA007B768B /* Images.xcassets */,
-				7D6CE13C19A24DCA007B768B /* main.m */,
 				7D6CE13D19A24DCA007B768B /* SupportingFiles */,
 			);
 			path = Example;
@@ -214,6 +211,9 @@
 		7D6CE13D19A24DCA007B768B /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				7D6CE13B19A24DCA007B768B /* Images.xcassets */,
+				7D6CE13C19A24DCA007B768B /* main.m */,
+				7D6CE13619A24DCA007B768B /* InfoPlist.strings */,
 				7D6CE13E19A24DCA007B768B /* GVAnimatedPaging-Info.plist */,
 				7D6CE13F19A24DCA007B768B /* GVAnimatedPaging-Prefix.pch */,
 			);
@@ -362,6 +362,7 @@
 				7D6CE13719A24DCA007B768B /* en */,
 			);
 			name = InfoPlist.strings;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -443,8 +444,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "GVAnimatedPaging/SupportingFiles/GVAnimatedPaging-Prefix.pch";
-				INFOPLIST_FILE = "GVAnimatedPaging/SupportingFiles/GVAnimatedPaging-Info.plist";
+				GCC_PREFIX_HEADER = "Example/SupportingFiles/GVAnimatedPaging-Prefix.pch";
+				INFOPLIST_FILE = "Example/SupportingFiles/GVAnimatedPaging-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -458,8 +459,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "GVAnimatedPaging/SupportingFiles/GVAnimatedPaging-Prefix.pch";
-				INFOPLIST_FILE = "GVAnimatedPaging/SupportingFiles/GVAnimatedPaging-Info.plist";
+				GCC_PREFIX_HEADER = "Example/SupportingFiles/GVAnimatedPaging-Prefix.pch";
+				INFOPLIST_FILE = "Example/SupportingFiles/GVAnimatedPaging-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
