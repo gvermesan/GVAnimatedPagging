@@ -15,7 +15,6 @@
 		1EDFDFED19963BCD0055E374 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDFDFD519963BCD0055E374 /* UIKit.framework */; };
 		1EDFDFF519963BCD0055E374 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1EDFDFF319963BCD0055E374 /* InfoPlist.strings */; };
 		1EDFDFF719963BCD0055E374 /* GVAnimatedPaggingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDFDFF619963BCD0055E374 /* GVAnimatedPaggingTests.m */; };
-		7D6CE14019A24DCA007B768B /* GVDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CE12819A24DCA007B768B /* GVDataSource.m */; };
 		7D6CE14119A24DCA007B768B /* GVAnimatedPaging.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CE12A19A24DCA007B768B /* GVAnimatedPaging.m */; };
 		7D6CE14219A24DCA007B768B /* GVContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CE12C19A24DCA007B768B /* GVContainer.m */; };
 		7D6CE14319A24DCA007B768B /* GVHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CE12E19A24DCA007B768B /* GVHeader.m */; };
@@ -27,6 +26,7 @@
 		7D6CE14919A24DCA007B768B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CE13B19A24DCA007B768B /* Images.xcassets */; };
 		7D6CE14A19A24DCA007B768B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CE13C19A24DCA007B768B /* main.m */; };
 		7D6CE14B19A24DCA007B768B /* GVAnimatedPaging-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CE13E19A24DCA007B768B /* GVAnimatedPaging-Info.plist */; };
+		7D6CE16219A258DA007B768B /* GVDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CE16119A258DA007B768B /* GVDataSource.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,8 +49,6 @@
 		1EDFDFF219963BCD0055E374 /* GVAnimatedPaggingTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GVAnimatedPaggingTests-Info.plist"; sourceTree = "<group>"; };
 		1EDFDFF419963BCD0055E374 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1EDFDFF619963BCD0055E374 /* GVAnimatedPaggingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GVAnimatedPaggingTests.m; sourceTree = "<group>"; };
-		7D6CE12719A24DCA007B768B /* GVDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVDataSource.h; sourceTree = "<group>"; };
-		7D6CE12819A24DCA007B768B /* GVDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GVDataSource.m; sourceTree = "<group>"; };
 		7D6CE12919A24DCA007B768B /* GVAnimatedPaging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVAnimatedPaging.h; sourceTree = "<group>"; };
 		7D6CE12A19A24DCA007B768B /* GVAnimatedPaging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GVAnimatedPaging.m; sourceTree = "<group>"; };
 		7D6CE12B19A24DCA007B768B /* GVContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVContainer.h; sourceTree = "<group>"; };
@@ -70,6 +68,8 @@
 		7D6CE13C19A24DCA007B768B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../main.m; sourceTree = "<group>"; };
 		7D6CE13E19A24DCA007B768B /* GVAnimatedPaging-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GVAnimatedPaging-Info.plist"; sourceTree = "<group>"; };
 		7D6CE13F19A24DCA007B768B /* GVAnimatedPaging-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GVAnimatedPaging-Prefix.pch"; sourceTree = "<group>"; };
+		7D6CE16019A258DA007B768B /* GVDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVDataSource.h; sourceTree = "<group>"; };
+		7D6CE16119A258DA007B768B /* GVDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GVDataSource.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,7 +168,8 @@
 		7D6CE12519A24DCA007B768B /* AnimatedPaging */ = {
 			isa = PBXGroup;
 			children = (
-				7D6CE12619A24DCA007B768B /* DataSource */,
+				7D6CE16019A258DA007B768B /* GVDataSource.h */,
+				7D6CE16119A258DA007B768B /* GVDataSource.m */,
 				7D6CE12919A24DCA007B768B /* GVAnimatedPaging.h */,
 				7D6CE12A19A24DCA007B768B /* GVAnimatedPaging.m */,
 				7D6CE12B19A24DCA007B768B /* GVContainer.h */,
@@ -181,15 +182,6 @@
 				7D6CE13219A24DCA007B768B /* GVScrollView.m */,
 			);
 			path = AnimatedPaging;
-			sourceTree = "<group>";
-		};
-		7D6CE12619A24DCA007B768B /* DataSource */ = {
-			isa = PBXGroup;
-			children = (
-				7D6CE12719A24DCA007B768B /* GVDataSource.h */,
-				7D6CE12819A24DCA007B768B /* GVDataSource.m */,
-			);
-			path = DataSource;
 			sourceTree = "<group>";
 		};
 		7D6CE13319A24DCA007B768B /* Examples */ = {
@@ -317,12 +309,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D6CE14019A24DCA007B768B /* GVDataSource.m in Sources */,
 				7D6CE14219A24DCA007B768B /* GVContainer.m in Sources */,
 				7D6CE14519A24DCA007B768B /* GVScrollView.m in Sources */,
 				7D6CE14819A24DCA007B768B /* GVAppDelegate.m in Sources */,
 				7D6CE14119A24DCA007B768B /* GVAnimatedPaging.m in Sources */,
 				7D6CE14419A24DCA007B768B /* GVIndicatorView.m in Sources */,
+				7D6CE16219A258DA007B768B /* GVDataSource.m in Sources */,
 				7D6CE14319A24DCA007B768B /* GVHeader.m in Sources */,
 				7D6CE14A19A24DCA007B768B /* main.m in Sources */,
 				7D6CE14619A24DCA007B768B /* GVMainViewController.m in Sources */,
