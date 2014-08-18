@@ -102,38 +102,6 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     self.animatedPaging.frame = self.view.bounds;
-    CGFloat headerHeight = 60.f;
-//    self.tableview1.frame = CGRectMake(0.0,
-//                                       0.0,
-//                                       CGRectGetWidth(self.view.bounds),
-//                                       CGRectGetHeight(self.view.bounds) - headerHeight);
-//    self.tableview2.frame = CGRectMake(0.f,
-//                                       0.0,
-//                                       CGRectGetWidth(self.view.bounds),
-//                                       CGRectGetHeight(self.view.bounds) - headerHeight);
-//    self.tableview3.frame = CGRectMake(0.f,
-//                                       0.0,
-//                                       CGRectGetWidth(self.view.bounds),
-//                                       CGRectGetHeight(self.view.bounds) - headerHeight);
-//    self.redView.frame = CGRectMake(0.f,
-//                                    0.0,
-//                                    CGRectGetWidth(self.view.bounds),
-//                                    CGRectGetHeight(self.view.bounds) - headerHeight);
-//    
-//    self.greenView.frame = CGRectMake(0.f,
-//                                    0.0,
-//                                    CGRectGetWidth(self.animatedPaging.bounds),
-//                                    CGRectGetHeight(self.view.bounds) - headerHeight);
-//    self.yellowView.frame = CGRectMake(0.f,
-//                                    0.0,
-//                                    CGRectGetWidth(self.view.bounds),
-//                                    CGRectGetHeight(self.view.bounds) - headerHeight);
-//    
-//    self.purpleView.frame = CGRectMake(0.f,
-//                                       0.0,
-//                                       CGRectGetWidth(self.view.bounds),
-//                                       CGRectGetHeight(self.view.bounds) - headerHeight);
-    
 }
 
 
@@ -158,10 +126,4 @@
     return cell;
 }
 
-//- (void)viewDidAppear:(BOOL)animated {
-//    [super viewDidAppear:animated];
-//    [self.allViews addObject:self.purpleView];
-//    [self.allAttributedStrings addObject:@"New view"];
-//    [self.animatedPaging reloadData];
-//}
 @end

@@ -60,7 +60,7 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
                                        CGRectGetMaxY(self.header.frame),
                                        CGRectGetWidth(self.bounds),
                                        CGRectGetHeight(self.bounds) - CGRectGetHeight(self.header.bounds));
-
+    [self.scrollView addViewsOverScrollView:self.allViews];
 }
 
 #pragma mark - Public methods
@@ -78,8 +78,8 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
         [self.allViews addObject:container.linkedView];
         [self.allAttributedStrings addObject:container.attributedString];
     }
-    self.scrollView.allViews = [self.allViews mutableCopy];
-    self.header.names = [self.allAttributedStrings mutableCopy];
+    self.scrollView.allViews = self.allViews;
+    self.header.names = self.allAttributedStrings;
 }
 
 #pragma mark - Property
@@ -131,7 +131,7 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     BOOL flag = (currentTouchPoint.x < firstTouchX);
     
     NSUInteger currentPage = flag ? (self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds)) + 1 :
-    ceilf((self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds))) - 1;
+                                    ceilf((self.scrollView.contentOffset.x / CGRectGetWidth(self.bounds))) - 1;
     
     CGFloat newContentOffsetX = flag ? currentPage * CGRectGetWidth(self.bounds) - currentTouchPoint.x - (CGRectGetWidth(self.bounds) - firstTouchX):
                                        (currentPage + 1) * CGRectGetWidth(self.bounds) - currentTouchPoint.x + firstTouchX;
@@ -141,7 +141,7 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
         return;
     }
     
-    if (newContentOffsetX  < 0 && !flag) {
+    if (self.scrollView.contentOffset.x <= 0 && !flag) {
         return;
     }
     

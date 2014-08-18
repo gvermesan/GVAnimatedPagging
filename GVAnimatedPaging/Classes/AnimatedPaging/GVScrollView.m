@@ -27,14 +27,13 @@
     return self;
 }
 
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    [self addViewsOverScrollView:self.allViews];
-}
-
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"contentSize"]) {
-        
+        CGRect frame = CGRectMake(self.currentPage * CGRectGetWidth(self.bounds),
+                                  0.f,
+                                  CGRectGetWidth(self.bounds),
+                                  CGRectGetHeight(self.bounds));
+        [self scrollRectToVisible:frame animated:NO];
     }
 }
 
@@ -52,7 +51,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.scrollViewDelegateValues) {
-        CGFloat velocity = [[scrollView panGestureRecognizer] velocityInView:self].x;
+        CGFloat velocity = fabsf([[scrollView panGestureRecognizer] velocityInView:self].x);
         self.scrollViewDelegateValues(scrollView.contentOffset.x, velocity);
     }
 }
@@ -69,10 +68,10 @@
         UIView *view = views[i];
         
         CGRect newFrame = view.frame;
-        newFrame.origin.x = CGRectGetWidth(view.bounds) * i;
-        newFrame.origin.y = 0.f;
-        newFrame.size.width = CGRectGetWidth(self.bounds);
-        newFrame.size.height = CGRectGetHeight(self.bounds);
+        newFrame = CGRectMake(CGRectGetWidth(self.bounds) * i,
+                              0.f,
+                              CGRectGetWidth(self.bounds),
+                              CGRectGetHeight(self.bounds));
         view.frame = newFrame;
         if (![[self subviews] containsObject:view]) {
             [self addSubview:view];

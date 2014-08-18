@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 @class GVContainer;
 
-typedef CGFloat(^GVHeaderHeight)(void);
+typedef float(^GVHeaderHeight)(void);
 typedef GVContainer* (^GVContainerViewAtIndex)(NSUInteger);
 typedef NSUInteger(^GVNumberOfViews)(void);
 
