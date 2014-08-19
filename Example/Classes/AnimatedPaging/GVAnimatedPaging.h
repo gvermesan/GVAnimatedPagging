@@ -10,12 +10,15 @@
 @class GVHeader;
 @class GVContainer;
 @class GVDataSource;
+@class GVScrollView;
 
 @interface GVAnimatedPaging : UIView
 
 - (instancetype)initWithFrame:(CGRect)frame
                 andDataSource:(GVDataSource *)dataSource;
 
+@property (nonatomic, strong, readonly) GVScrollView *scrollView;
+@property (nonatomic, strong, readonly) GVHeader *header;
 @property (nonatomic, strong, readonly) GVDataSource *dataSource;
 
 - (void)reloadData;
