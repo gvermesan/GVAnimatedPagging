@@ -15,7 +15,7 @@ typedef void(^GVHeaderStateFinished)(CGFloat);
 
 @interface GVHeader : UIView
 
-@property (nonatomic, readonly, strong) GVIndicatorView *indicatorview;
+@property (nonatomic, readonly, strong) GVIndicatorView *indicatorView;
 
 @property (nonatomic, strong) NSArray *names;
 

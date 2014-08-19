@@ -14,6 +14,10 @@
 
 @implementation GVScrollView
 
+- (void)dealloc {
+    [self removeObserver:self forKeyPath:@"contentSize"];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {

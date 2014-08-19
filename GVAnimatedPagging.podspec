@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GVAnimatedPagging"
-  s.version      = "0.0.2"
+  s.version      = "0.0.3"
   s.platform     = :ios, "7.0"
   s.summary      = "Custom animated paging"
   s.description  = <<-DESC
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
                    DESC
   s.homepage     = "https://github.com/gvermesan/GVAnimatedPagging"
   s.authors            = { "Gabriel Vermesan" => "vermesan.gabriel@yahoo.com" }
-  s.source       = { :git => "https://github.com/gvermesan/GVAnimatedPagging.git", :tag => "0.0.2" }
+  s.source       = { :git => "https://github.com/gvermesan/GVAnimatedPagging.git", :tag => s.version.to_s }
   s.source_files  = "Example/Classes/AnimatedPaging/*.{h,m}"
   s.requires_arc = true
   s.license      = { :type => "MIT",

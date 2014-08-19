@@ -92,6 +92,18 @@ NSString *const kFirstTouch = @"FirstTouch";
         return;
     }
     _headerNameFont = headerNameFont;
+    for (UILabel *label in self.allLabels) {
+        label.font = _headerNameFont;
+    }
+}
+
+- (void)setCenterTitleColor:(UIColor *)centerTitleColor {
+    if ([_centerTitleColor isEqual:centerTitleColor]) {
+        return;
+    }
+    _centerTitleColor = centerTitleColor;
+    UILabel *firstLabel = [self.allLabels firstObject];
+    firstLabel.textColor = _centerTitleColor;
 }
 
 - (GVIndicatorView *)indicatorView {
@@ -216,9 +228,9 @@ NSString *const kFirstTouch = @"FirstTouch";
 
 - (void)defaultValues {
     UILabel *firstLabel = [self.allLabels firstObject];
-    firstLabel.textColor = [UIColor whiteColor];
     self.neighborTitleColor = [UIColor lightGrayColor];
     self.centerTitleColor = [UIColor whiteColor];
+    firstLabel.textColor = self.centerTitleColor;
 }
 
 - (void)defaultsValuesForLabel:(UILabel *)label {

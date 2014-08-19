@@ -10,6 +10,8 @@
 #import "GVAnimatedPaging.h"
 #import "GVContainer.h"
 #include "GVDataSource.h"
+#include "GVIndicatorView.h"
+#include "GVHeader.h"
 
 #define DEVICE_IS_IPAD ( UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM())
 

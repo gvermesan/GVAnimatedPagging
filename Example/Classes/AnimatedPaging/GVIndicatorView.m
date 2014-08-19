@@ -48,7 +48,7 @@
     CGFloat sideWidth = 2 * CGRectGetHeight(self.bounds) / sqrtf(3.f);
     
     UIBezierPath *bezierPath = [UIBezierPath bezierPath];
-    [bezierPath setLineWidth:1.F];
+    [bezierPath setLineWidth:2.f];
     
     [bezierPath moveToPoint:CGPointMake(0.f, CGRectGetHeight(self.bounds))];
     [bezierPath addLineToPoint:CGPointMake((CGRectGetWidth(self.bounds) - sideWidth) / 2.f, CGRectGetHeight(self.bounds))];
