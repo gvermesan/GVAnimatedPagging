@@ -54,7 +54,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.scrollViewDelegateValues) {
         CGFloat velocity = fabsf([[scrollView panGestureRecognizer] velocityInView:self].x);
-        self.scrollViewDelegateValues(scrollView.contentOffset.x, velocity);
+        self.scrollViewDelegateValues(scrollView.contentOffset, velocity);
     }
 }
 

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^GVScrollViewDelegateValues)(CGFloat, CGFloat);
+typedef void(^GVScrollViewDelegateValues)(CGPoint, CGFloat);
 
 @interface GVScrollView : UIScrollView
 

@@ -88,9 +88,13 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     if (!_scrollView) {
         GVWeakSelf;
         _scrollView = [[GVScrollView alloc] initWithFrame:CGRectZero];
-        _scrollView.scrollViewDelegateValues = ^(CGFloat contentOffsetX, CGFloat velocity) {
+        _scrollView.scrollViewDelegateValues = ^(CGPoint contentOffset, CGFloat velocity) {
+            CGFloat contentOffsetX = contentOffset.x;
             weakSelf.header.contentOffsetX = contentOffsetX;
             weakSelf.header.velocityValue = velocity;
+            if (weakSelf.dataSource.pageDidScroll) {
+                weakSelf.dataSource.pageDidScroll(contentOffset);
+            }
         };
     }
     return _scrollView;
