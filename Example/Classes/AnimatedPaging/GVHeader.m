@@ -106,6 +106,15 @@ NSString *const kFirstTouch = @"FirstTouch";
     firstLabel.textColor = _centerTitleColor;
 }
 
+- (void)setCurrentPage:(NSUInteger)currentPage {
+    if (_currentPage == currentPage) {
+        return;
+    }
+    _currentPage = currentPage;
+    UILabel *currentLabel = self.allLabels[_currentPage];
+    currentLabel.textColor = self.centerTitleColor;
+}
+
 - (GVIndicatorView *)indicatorView {
     if (!_indicatorView) {
         CGRect frame = CGRectMake(0.f,

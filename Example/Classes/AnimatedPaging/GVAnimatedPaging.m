@@ -84,6 +84,7 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     
     NSAssert(index, @"Container at your index was not found!");
     self.scrollView.currentPage = index;
+    self.header.currentPage = index;
 }
 
 #pragma mark - Property

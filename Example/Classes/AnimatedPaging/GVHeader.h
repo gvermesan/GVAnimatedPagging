@@ -29,6 +29,7 @@ typedef void(^GVHeaderStateFinished)(CGFloat);
 
 @property (nonatomic, assign) CGFloat contentOffsetX; // This property is used to animate the header text, Shouldn not be modified
 @property (nonatomic, assign) CGFloat velocityValue; // This property is used to animate the header text, Shouldn not be modified
+@property (nonatomic, assign) NSUInteger currentPage;
 
 //Blocks propertis
 @property (nonatomic, copy) GVHeaderStateChanged stateChanged;

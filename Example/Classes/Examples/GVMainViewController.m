@@ -99,6 +99,12 @@
     [self.view addSubview:self.animatedPaging];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    GVContainer *container = self.allContainers[1];
+    [self.animatedPaging scrollToContainer:container];
+}
+
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     self.animatedPaging.frame = self.view.bounds;
