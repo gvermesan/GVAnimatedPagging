@@ -31,11 +31,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"contentSize"]) {
-        CGRect frame = CGRectMake(self.currentPage * CGRectGetWidth(self.bounds),
-                                  0.f,
-                                  CGRectGetWidth(self.bounds),
-                                  CGRectGetHeight(self.bounds));
-        [self scrollRectToVisible:frame animated:NO];
+        [self scrollViewToRectWithAnimation:NO];
     }
 }
 
@@ -47,6 +43,14 @@
     }
     _allViews = allViews;
     [self addViewsOverScrollView:_allViews];
+}
+
+- (void)setCurrentPage:(NSUInteger)currentPage {
+    if (_currentPage == currentPage) {
+        return;
+    }
+    _currentPage = currentPage;
+    [self scrollViewToRectWithAnimation:YES];
 }
 
 #pragma mark - UIScrolViewDelegate
@@ -80,7 +84,15 @@
         }
     }
     self.contentSize = CGSizeMake(CGRectGetWidth(self.bounds) * count,
-                                  CGRectGetHeight(self.bounds));
+                                CGRectGetHeight(self.bounds));
+}
+
+- (void)scrollViewToRectWithAnimation:(BOOL)animated {
+    CGRect frame = CGRectMake(self.currentPage * CGRectGetWidth(self.bounds),
+                              0.f,
+                              CGRectGetWidth(self.bounds),
+                              CGRectGetHeight(self.bounds));
+    [self scrollRectToVisible:frame animated:animated];
 }
 
 @end

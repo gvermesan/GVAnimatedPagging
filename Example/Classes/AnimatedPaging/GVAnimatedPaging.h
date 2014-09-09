@@ -22,5 +22,6 @@
 @property (nonatomic, strong, readonly) GVDataSource *dataSource;
 
 - (void)reloadData;
+- (void)scrollToContainer:(GVContainer *)container;
 
 @end

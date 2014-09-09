@@ -12,6 +12,7 @@
 #include "GVDataSource.h"
 #include "GVIndicatorView.h"
 #include "GVHeader.h"
+#import "GVScrollView.h"
 
 #define DEVICE_IS_IPAD ( UIUserInterfaceIdiomPad == UI_USER_INTERFACE_IDIOM())
 
@@ -26,8 +27,8 @@
 @property (nonatomic, strong) UIView *yellowView;
 @property (nonatomic, strong) UIView *purpleView;
 
-@property (nonatomic, strong) NSMutableArray *allViews;
-@property (nonatomic, strong) NSMutableArray *allAttributedStrings;
+@property (nonatomic, strong) NSMutableArray *allContainers;
+
 
 @end
 
@@ -39,57 +40,53 @@
     self.title = @"Animated Paging";
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
-    self.allViews = [NSMutableArray array];
-    self.allAttributedStrings = [NSMutableArray array];
+    self.allContainers = [NSMutableArray array];
 
     self.tableview1 = [[UITableView alloc] initWithFrame:CGRectZero
                                                           style:UITableViewStylePlain];
     self.tableview1.delegate = self;
     self.tableview1.dataSource = self;
-    [self.allViews addObject:self.tableview1];
+    
+    NSAttributedString *firstAttributtedString = [[NSAttributedString alloc] initWithString:@"#1 TableView"];
+    GVContainer *firstContainer = [[GVContainer alloc] initWithHeaderText:firstAttributtedString
+                                                               linkedView:self.tableview1];
+    [self.allContainers addObject:firstContainer];
     
     self.redView = [[UIView alloc] initWithFrame:CGRectZero];
     self.redView.backgroundColor = [UIColor redColor];
-    [self.allViews addObject:self.redView];
+    
+    NSAttributedString *secondAttributtedString = [[NSAttributedString alloc] initWithString:@"Red View"];
+    GVContainer *secondContainer = [[GVContainer alloc] initWithHeaderText:secondAttributtedString
+                                                               linkedView:self.redView];
+    [self.allContainers addObject:secondContainer];
     
     self.tableview2 = [[UITableView alloc] initWithFrame:CGRectZero
                                                                   style:UITableViewStylePlain];
 
     self.tableview2.delegate = self;
     self.tableview2.dataSource = self;
-    [self.allViews addObject:self.tableview2];
+    NSAttributedString *thirdAttributtedString = [[NSAttributedString alloc] initWithString:@"#2 TableView"];
+    GVContainer *thirdContainer = [[GVContainer alloc] initWithHeaderText:thirdAttributtedString
+                                                                linkedView:self.tableview2];
+    [self.allContainers addObject:thirdContainer];
     
     self.greenView = [[UIView alloc] initWithFrame:CGRectZero];
     self.greenView.backgroundColor = [UIColor greenColor];
-    [self.allViews addObject:self.greenView];
+   
+    NSAttributedString *fourthAttributtedString = [[NSAttributedString alloc] initWithString:@"Green View"];
+    GVContainer *fourthContainer = [[GVContainer alloc] initWithHeaderText:fourthAttributtedString
+                                                                linkedView:self.greenView];
+    [self.allContainers addObject:fourthContainer];
     
-    self.tableview3 = [[UITableView alloc] initWithFrame:CGRectZero
-                                                   style:UITableViewStylePlain];
-    self.tableview3.delegate = self;
-    self.tableview3.dataSource = self;
-    [self.allViews addObject:self.tableview3];
-
-    self.yellowView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.yellowView.backgroundColor = [UIColor yellowColor];
-    [self.allViews addObject:self.yellowView];
-    
-    self.purpleView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.purpleView.backgroundColor = [UIColor purpleColor];
     
     GVDataSource *dataSource = [GVDataSource new];
     dataSource.numberOfViewsCallBlock = ^() {
-        return [self.allViews count];
+        return [self.allContainers count];
     };
-    
-    [self.allAttributedStrings addObjectsFromArray:@[@"#1 TableView", @"Red View", @"#2 TableView", @"Green View", @"#3 TableView", @"Yellow View"]];
     
     dataSource.containedViewAtIndexCallblock = ^(NSUInteger index) {
         
-        UIView *view = self.allViews[index];
-        NSString *string = self.allAttributedStrings[index];
-        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:string];
-        GVContainer *container = [[GVContainer alloc] initWithHeaderText:attributedString
-                                                    linkedView:view];
+        GVContainer *container = self.allContainers[index];
         return container;
     };
     
@@ -97,7 +94,8 @@
         return 60.f;
     };
     
-    self.animatedPaging = [[GVAnimatedPaging alloc] initWithFrame:CGRectZero andDataSource:dataSource];
+    self.animatedPaging = [[GVAnimatedPaging alloc] initWithFrame:self.view.bounds andDataSource:dataSource];
+
     [self.view addSubview:self.animatedPaging];
 }
 

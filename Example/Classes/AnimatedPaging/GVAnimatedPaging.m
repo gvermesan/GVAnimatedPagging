@@ -37,9 +37,12 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     self = [super initWithFrame:frame];
     if (self) {
         self.dataSource = dataSource;
+        self.headerHeight = self.dataSource.headerHeightCallblock();
+        
         [self addSubview:self.header];
         [self addSubview:self.scrollView];
         
+        [self defaultValues];
         [self reloadData];
     }
     return self;
@@ -49,17 +52,9 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.headerHeight = self.dataSource.headerHeightCallblock();
+    self.header.frame = [self frameForHeader];
+    self.scrollView.frame = [self frameForScrollView];
     
-    self.header.frame = CGRectMake(0.f,
-                                   0.f,
-                                   CGRectGetWidth(self.bounds),
-                                   self.headerHeight);
-    
-    self.scrollView.frame = CGRectMake(0.f,
-                                       CGRectGetMaxY(self.header.frame),
-                                       CGRectGetWidth(self.bounds),
-                                       CGRectGetHeight(self.bounds) - CGRectGetHeight(self.header.bounds));
     [self.scrollView addViewsOverScrollView:self.allViews];
 }
 
@@ -82,12 +77,23 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     self.header.names = self.allAttributedStrings;
 }
 
+- (void)scrollToContainer:(GVContainer *)container {
+    NSParameterAssert(container);
+    
+    NSUInteger index = [self.allViews indexOfObject:container.linkedView];
+    
+    NSAssert(!index, @"Container at your index was not found!");
+    self.scrollView.currentPage = index;
+}
+
 #pragma mark - Property
 
 - (GVScrollView *)scrollView {
     if (!_scrollView) {
         GVWeakSelf;
-        _scrollView = [[GVScrollView alloc] initWithFrame:CGRectZero];
+        CGRect rect = [self frameForScrollView];
+        
+        _scrollView = [[GVScrollView alloc] initWithFrame:rect];
         _scrollView.scrollViewDelegateValues = ^(CGPoint contentOffset, CGFloat velocity) {
             CGFloat contentOffsetX = contentOffset.x;
             weakSelf.header.contentOffsetX = contentOffsetX;
@@ -103,7 +109,9 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
 - (GVHeader *)header {
     if (!_header) {
         GVWeakSelf;
-        _header = [[GVHeader alloc] initWithFrame:CGRectZero];
+        CGRect rect = [self frameForHeader];
+        
+        _header = [[GVHeader alloc] initWithFrame:rect];
         _header.stateChanged = ^(NSDictionary *dictionary) {
             [weakSelf headerTouched:dictionary];
         };
@@ -162,7 +170,27 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
 }
 
 - (void)defaultValues {
-    self.headerHeight = 60.f;
+    self.layer.masksToBounds = YES;
 }
+
+#pragma mark - Frame methods
+
+- (CGRect)frameForHeader {
+    CGRect frame = CGRectMake(0.f,
+                              0.f,
+                              CGRectGetWidth(self.bounds),
+                              self.headerHeight);
+    return frame;
+}
+
+- (CGRect)frameForScrollView {
+    CGRect frame = CGRectMake(0.f,
+                              CGRectGetMaxY(self.header.frame),
+                              CGRectGetWidth(self.bounds),
+                              CGRectGetHeight(self.bounds) - CGRectGetHeight(self.header.bounds));
+    return frame;
+}
+
+
 
 @end

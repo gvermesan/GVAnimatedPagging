@@ -108,7 +108,11 @@ NSString *const kFirstTouch = @"FirstTouch";
 
 - (GVIndicatorView *)indicatorView {
     if (!_indicatorView) {
-        _indicatorView = [[GVIndicatorView alloc] initWithFrame:CGRectZero];
+        CGRect frame = CGRectMake(0.f,
+                                  CGRectGetHeight(self.bounds) - self.indicatorHeight,
+                                  CGRectGetWidth(self.bounds),
+                                  self.indicatorHeight);
+        _indicatorView = [[GVIndicatorView alloc] initWithFrame:frame];
     }
     return _indicatorView;
 }
