@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GVAnimatedPagging"
-  s.version      = "0.0.6"
+  s.version      = "0.0.7"
   s.platform     = :ios, "7.0"
   s.summary      = "Custom animated paging"
   s.description  = <<-DESC
