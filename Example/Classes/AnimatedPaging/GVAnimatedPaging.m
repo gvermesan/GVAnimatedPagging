@@ -82,7 +82,7 @@ NSString *const kFirstTouchNotified = @"FirstTouch";
     
     NSUInteger index = [self.allViews indexOfObject:container.linkedView];
     
-    NSAssert(index, @"Container at your index was not found!");
+    NSAssert(index != NSNotFound, @"Container at your index was not found!");
     self.scrollView.currentPage = index;
     self.header.currentPage = index;
 }
