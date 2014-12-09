@@ -61,14 +61,14 @@
     XCTAssertEqual(redContainer.linkedView.backgroundColor, [UIColor redColor]);
 }
 
-- (void)testScrollToContainer {
+- (void)testScrollToThirdContainer {
     GVAnimatedPaging *animatedPagging = self.mainViewController.animatedPaging;
     XCTAssert(animatedPagging, "Animated pagging view should exist by now");
     
     NSArray *allContainers = self.mainViewController.containers;
     XCTAssert(allContainers.count, @"There should be at least one container");
     
-    NSUInteger thirdIndex= 2U;
+    NSUInteger thirdIndex = 2U;
     GVContainer *thirdContainer = allContainers[thirdIndex];
     XCTAssert(thirdContainer, @"Should be a container");
     
@@ -76,6 +76,24 @@
     XCTAssertEqualObjects(thirdContainer.attributedString.string, @"#2 TableView");
     XCTAssertEqualObjects([thirdContainer.linkedView class], [UITableView class]);
 
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:2.0]];
+}
+
+- (void)testScrollThroughFourthContainer {
+    GVAnimatedPaging *animatedPagging = self.mainViewController.animatedPaging;
+    XCTAssert(animatedPagging, "Animated pagging view should exist by now");
+    
+    NSArray *allContainers = self.mainViewController.containers;
+    XCTAssert(allContainers.count, @"There should be at least one container");
+    
+    NSUInteger fourthIndex = 3U;
+    GVContainer *fourthContainer = allContainers[fourthIndex];
+    XCTAssert(fourthContainer, @"Should be a container");
+    
+    [animatedPagging scrollToContainer:fourthContainer];
+    XCTAssertNotEqualObjects(fourthContainer.attributedString.string, @"#2 TableView");
+    XCTAssertNotEqualObjects([fourthContainer.linkedView class], [UITableView class]);
+    
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:2.0]];
 }
 
