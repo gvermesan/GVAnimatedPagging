@@ -49,6 +49,7 @@
 		1EDFDFF219963BCD0055E374 /* GVAnimatedPaggingTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GVAnimatedPaggingTests-Info.plist"; sourceTree = "<group>"; };
 		1EDFDFF419963BCD0055E374 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1EDFDFF619963BCD0055E374 /* GVAnimatedPaggingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GVAnimatedPaggingTests.m; sourceTree = "<group>"; };
+		7D2CD63D1A3603EC0076C899 /* GVAnimatedPaging-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GVAnimatedPaging-Prefix.pch"; sourceTree = "<group>"; };
 		7D6CE12919A24DCA007B768B /* GVAnimatedPaging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVAnimatedPaging.h; sourceTree = "<group>"; };
 		7D6CE12A19A24DCA007B768B /* GVAnimatedPaging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GVAnimatedPaging.m; sourceTree = "<group>"; };
 		7D6CE12B19A24DCA007B768B /* GVContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVContainer.h; sourceTree = "<group>"; };
@@ -67,7 +68,6 @@
 		7D6CE13B19A24DCA007B768B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
 		7D6CE13C19A24DCA007B768B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../main.m; sourceTree = "<group>"; };
 		7D6CE13E19A24DCA007B768B /* GVAnimatedPaging-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GVAnimatedPaging-Info.plist"; sourceTree = "<group>"; };
-		7D6CE13F19A24DCA007B768B /* GVAnimatedPaging-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GVAnimatedPaging-Prefix.pch"; sourceTree = "<group>"; };
 		7D6CE16019A258DA007B768B /* GVDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GVDataSource.h; sourceTree = "<group>"; };
 		7D6CE16119A258DA007B768B /* GVDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GVDataSource.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -148,7 +148,6 @@
 			isa = PBXGroup;
 			children = (
 				7D6CE12419A24DCA007B768B /* Classes */,
-				7D6CE13819A24DCA007B768B /* GVAnimatedPagingTests */,
 				7D6CE13919A24DCA007B768B /* GVAppDelegate.h */,
 				7D6CE13A19A24DCA007B768B /* GVAppDelegate.m */,
 				7D6CE13D19A24DCA007B768B /* SupportingFiles */,
@@ -193,21 +192,14 @@
 			path = Examples;
 			sourceTree = "<group>";
 		};
-		7D6CE13819A24DCA007B768B /* GVAnimatedPagingTests */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = GVAnimatedPagingTests;
-			sourceTree = "<group>";
-		};
 		7D6CE13D19A24DCA007B768B /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				7D2CD63D1A3603EC0076C899 /* GVAnimatedPaging-Prefix.pch */,
 				7D6CE13B19A24DCA007B768B /* Images.xcassets */,
 				7D6CE13C19A24DCA007B768B /* main.m */,
 				7D6CE13619A24DCA007B768B /* InfoPlist.strings */,
 				7D6CE13E19A24DCA007B768B /* GVAnimatedPaging-Info.plist */,
-				7D6CE13F19A24DCA007B768B /* GVAnimatedPaging-Prefix.pch */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -439,6 +431,7 @@
 				GCC_PREFIX_HEADER = "Example/SupportingFiles/GVAnimatedPaging-Prefix.pch";
 				INFOPLIST_FILE = "Example/SupportingFiles/GVAnimatedPaging-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -454,6 +447,7 @@
 				GCC_PREFIX_HEADER = "Example/SupportingFiles/GVAnimatedPaging-Prefix.pch";
 				INFOPLIST_FILE = "Example/SupportingFiles/GVAnimatedPaging-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -470,7 +464,7 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "GVAnimatedPagging/GVAnimatedPagging-Prefix.pch";
+				GCC_PREFIX_HEADER = "Example/SupportingFiles/GVAnimatedPaging-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -492,7 +486,7 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "GVAnimatedPagging/GVAnimatedPagging-Prefix.pch";
+				GCC_PREFIX_HEADER = "Example/SupportingFiles/GVAnimatedPaging-Prefix.pch";
 				INFOPLIST_FILE = "GVAnimatedPaggingTests/GVAnimatedPaggingTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";

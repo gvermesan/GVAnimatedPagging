@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+@class GVAnimatedPaging;
 
 @interface GVMainViewController : UIViewController
+
+//Just for the Unit Tests
+@property (nonatomic, readonly, strong) GVAnimatedPaging *animatedPaging;
+- (NSArray *)containers;
 
 @end

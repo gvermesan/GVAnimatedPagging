@@ -7,28 +7,77 @@
 //
 
 #import <XCTest/XCTest.h>
+#import <UIKit/UIKit.h>
+
+#import "GVMainViewController.h"
+#import "GVAnimatedPaging.h"
+#import "GVContainer.h"
+#import "GVScrollView.h"
+
+@interface GVAnimatedPaging ()
+
+- (void)scrollToContainer:(GVContainer *)container;
+
+@end
 
 @interface GVAnimatedPaggingTests : XCTestCase
+
+@property (nonatomic, strong) GVMainViewController *mainViewController;
 
 @end
 
 @implementation GVAnimatedPaggingTests
 
-- (void)setUp
-{
+- (void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    self.mainViewController = [[GVMainViewController alloc] initWithNibName:nil bundle:nil];
+    
+    //Load the view
+    __unused UIView *view = self.mainViewController.view;
 }
 
-- (void)tearDown
-{
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+- (void)tearDown {
+    self.mainViewController = nil;
     [super tearDown];
 }
 
-- (void)testExample
-{
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+- (void)testViewController {
+    XCTAssert(self.mainViewController, @"A view controller should be instantiated");
+    XCTAssert(self.mainViewController.isViewLoaded, @"Its view should be loaded");
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:2.0]];
 }
+
+- (void)testRedView {
+    GVAnimatedPaging *animatedPagging = self.mainViewController.animatedPaging;
+    XCTAssert(animatedPagging, "Animated pagging view should exist by now");
+    
+    NSArray *allContainers = self.mainViewController.containers;
+    XCTAssert(allContainers.count, @"There should be at least one container");
+    
+    NSUInteger secondIndex = 1U;
+    GVContainer *redContainer = allContainers[secondIndex];
+    XCTAssertEqualObjects(redContainer.attributedString.string, @"Red View");
+    XCTAssertEqualObjects([redContainer.linkedView class], [UIView class]);
+    XCTAssertEqual(redContainer.linkedView.backgroundColor, [UIColor redColor]);
+}
+
+- (void)testScrollToContainer {
+    GVAnimatedPaging *animatedPagging = self.mainViewController.animatedPaging;
+    XCTAssert(animatedPagging, "Animated pagging view should exist by now");
+    
+    NSArray *allContainers = self.mainViewController.containers;
+    XCTAssert(allContainers.count, @"There should be at least one container");
+    
+    NSUInteger thirdIndex= 2U;
+    GVContainer *thirdContainer = allContainers[thirdIndex];
+    XCTAssert(thirdContainer, @"Should be a container");
+    
+    [animatedPagging scrollToContainer:thirdContainer];
+    XCTAssertEqualObjects(thirdContainer.attributedString.string, @"#2 TableView");
+    XCTAssertEqualObjects([thirdContainer.linkedView class], [UITableView class]);
+
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:2.0]];
+}
+
 
 @end

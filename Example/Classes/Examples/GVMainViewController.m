@@ -18,7 +18,7 @@
 
 @interface GVMainViewController ()<UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) GVAnimatedPaging *animatedPaging;
+@property (nonatomic, readwrite, strong) GVAnimatedPaging *animatedPaging;
 @property (nonatomic, strong) UITableView *tableview1;
 @property (nonatomic, strong) UITableView *tableview2;
 @property (nonatomic, strong) UITableView *tableview3;
@@ -130,6 +130,12 @@
     
     cell.textLabel.text = @"This is a simple example.";
     return cell;
+}
+
+#pragma mark - Public methods
+
+- (NSArray *)containers {
+    return [NSArray arrayWithArray:self.allContainers];
 }
 
 @end
